@@ -1,2 +1,2 @@
-# Home Grown
-This is a home grown API platform.
+# Diagrams
+This is a diagrams API.
