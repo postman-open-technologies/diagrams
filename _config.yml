@@ -17,4 +17,4 @@ markdown:     kramdown
 
 token: token
 
-diagrams_base_url: https://vexez2v4w5.execute-api.us-west-1.amazonaws.com/staging
+diagrams_base_url: 
