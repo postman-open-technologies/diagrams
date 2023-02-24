@@ -1,0 +1,20 @@
+title: Diagrams
+description: This is a diagram API.
+
+image: https://postman-toolboxes2.s3.amazonaws.com/assets/api.png
+
+url: /explore
+#url: /
+
+email: kin@postman.com
+
+github_user: postman-open-technologies
+github_repo: diagrams
+github_branch: main
+
+version:      1.1.1
+markdown:     kramdown
+
+token: token
+
+diagrams_base_url: https://vexez2v4w5.execute-api.us-west-1.amazonaws.com/staging

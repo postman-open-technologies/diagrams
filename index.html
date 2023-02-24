@@ -1,0 +1,166 @@
+---
+layout: view
+title: Explore
+---
+
+
+<script>
+
+	function filterBlueprints(){
+
+		//alert("IN");
+
+		var blueprints = {{ site.data.blueprints | jsonify }};
+
+		var filter_roles = [];
+		var roles = document.getElementsByName("role");
+		for (var i = 0; i < roles.length; i++){
+			if(roles[i].checked){
+				filter_roles.push(roles[i].value);
+			}
+		}
+		console.log(filter_roles);
+
+		var filter_lifecycle = [];
+		var lifecycle = document.getElementsByName("lifecycle");
+		for (var i = 0; i < lifecycle.length; i++){
+			if(lifecycle[i].checked){
+				filter_lifecycle.push(lifecycle[i].value);
+			}
+		}
+		console.log(filter_lifecycle);
+
+		for (var i = 0; i < blueprints.length; i++){					
+
+			var role_match = 0;
+			var tag_match = 0;			
+
+			for (var j = 0; j < blueprints[i].roles.length; j++){							
+				for (var k = 0; k < filter_roles.length; k++){
+					if(blueprints[i].roles[j] == filter_roles[k]){
+						role_match = 1;	
+					}
+				}
+			}
+			
+			for (var j = 0; j < blueprints[i].tags.length; j++){							
+				for (var k = 0; k < filter_lifecycle.length; k++){					
+					if(blueprints[i].tags[j] == filter_lifecycle[k]){
+						tag_match = 1;
+					}
+				}
+			}
+
+			//console.log(filter_roles.length + ' && ' + filter_lifecycle.length);
+			if(filter_roles.length == 0 && filter_lifecycle.length == 0){
+				role_match = 1;
+				tag_match = 1;
+			}
+
+			var slug = blueprints[i].name;
+			slug = slug.split(' ').join('-');
+			slug = slug.split(',').join('');
+			slug = slug.split('?').join('');
+			slug = slug.toLowerCase();
+			slug = slug.trim();
+			console.log("slug: " + slug);
+			
+			if(role_match == 0 && tag_match == 0){
+				console.log('HIDE: ' + i + ' ' + blueprints[i].name + ' == (' + role_match + '/' + tag_match + ')');
+				document.getElementById('blueprint-' + slug).style.display = "none";	
+			}
+			else{
+				console.log('SHOW: ' + blueprints[i].name + ' == (' + role_match + '/' + tag_match + ')');
+				document.getElementById('blueprint-' + slug).style.display = "";	
+			}
+
+		}		
+		
+	}
+
+</script>
+
+<div class="container" style="padding-top: 70px;">
+	<div class="row align-top">
+		<div class="col-2" style="padding-left: 35px;">
+			{% assign role_counter = 0 %}					  
+			{% for role in site.data.roles %}					
+				<div class="form-check align-top">
+					<input name="role" class="form-check-input" type="checkbox" value="{{ role.name }}" id="flexCheckDefault" onClick="filterBlueprints()">
+					<label class="form-check-label" for="flexCheckDefault">
+						{{ role.name }}
+					</label>
+				</div>
+				{% assign role_counter = role_counter | plus: 1 %}
+			{% endfor %}	
+		</div>
+		<div class="col-8">
+
+			<style>
+				.accordion{
+					background-color: #000;
+				}
+			</style>
+
+			<div class="accordion" id="blueprintAccordian">
+
+				{% assign counter = 0 %}
+				{% assign blueprints = site.data.blueprints | sort: "level" %}
+				{% for blueprint in blueprints %}					
+					<div class="accordion-item" id="blueprint-{{ blueprint.name | slugify }}">						
+						<h2 class="accordion-header" id="heading-{{ counter }}">
+						  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ counter }}" aria-expanded="false" aria-controls="collapse-{{ counter }}" style="color: #000;">
+							{{ blueprint.name }} ({{ blueprint.level }})
+						  </button>
+						</h2>
+						<div id="collapse-{{ counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ counter }}" data-bs-parent="#accordion-{{ counter }}">
+						  <div class="accordion-body">
+							
+							<table width="100%">
+								<tr>
+									<td valign="top" align="center">
+										<img src="{{ blueprint.image }}" width="225" align="left" style="padding: 10px;">
+									</td>
+									<td>
+										<p>{{ blueprint.description }}</p>
+										{% if blueprint.blog_url %}
+										<p><strong>Links: </strong></p>
+										<ul>
+											<li><a href="https://www.postman.com/postman/workspace/postman-open-technologies-lifecycle/documentation/{{ blueprint.collection_id }}" target="_blank">View Blueprint</a></li>
+											{% if blueprint.blog_url != '' %}<li><a href="{{ blueprint.blog_url }}" target="_blank">View Blog Post</a></li>{% endif %}							
+										</ul>
+										{% endif %}
+										<strong>Tags: </strong>
+										{% for tag in blueprint.tags %}	
+											{{ tag }}{% unless forloop.last %}, {% endunless %}
+										{% endfor %}
+									</td>
+								</tr>
+							</table>		
+						  </div>						  
+						</div>
+					  </div>					
+					{% assign counter = counter | plus: 1 %}
+				{% endfor %}				
+
+			</div>
+		</div>	
+		<div class="col-2">
+			{% assign area_counter = 0 %}					  
+			{% for cycle in site.data.lifecycle %}	
+				{% if cycle.priority == 1 %}		
+					<div class="form-check align-top">
+						<input name="lifecycle" class="form-check-input" type="checkbox" value="{{ cycle.name }}" id="flexCheckDefault" onClick="filterBlueprints()">
+						<label class="form-check-label" for="flexCheckDefault">
+							{{ cycle.name }}
+						</label>
+					</div>
+					{% assign area_counter = role_counter | plus: 1 %}
+				{% endif %}						
+			{% endfor %}			
+		</div>
+	</div>
+	<div class="col-2"></div>	
+</div>
+
+

@@ -1,2 +1,2 @@
-# home-grown
+# Home Grown
 This is a home grown API platform.
