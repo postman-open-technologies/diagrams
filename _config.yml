@@ -3,7 +3,7 @@ description: This is a diagram API.
 
 image: https://postman-toolboxes2.s3.amazonaws.com/assets/api.png
 
-#url: /explore
+#url: /
 url: /
 
 email: kin@postman.com
@@ -15,6 +15,4 @@ github_branch: main
 version:      1.1.1
 markdown:     kramdown
 
-token: token
-
-diagrams_base_url: 
+diagrams_base_url: https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging
