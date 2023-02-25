@@ -1,0 +1,1663 @@
+
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="">
+   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+   <meta name="generator" content="Hugo 0.88.1">
+  
+   <title>Editor</title>
+   <link href="http://localhost:4000/assets/css/bootstrap.min.css" rel="stylesheet">
+   <meta name="theme-color" content="#7952b3">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Cookies.js - http://github.com/ScottHamper/Cookies -->
+    <script src="http://localhost:4000/assets/js/cookies.js"></script>
+
+    <script>
+
+        function getUrlVar(key){
+            var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
+            return result && unescape(result[1]) || "";
+        }
+
+    </script>
+
+  </head>
+  <body class="d-flex flex-column h-100">
+    
+<header>
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="http://localhost:4000/">Editor</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/editor/">Editor</a>
+          </li>                                                                            
+        </ul>
+        <form class="d-flex">
+          <!--<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>-->
+        </form>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="flex-shrink-0" style="margin-top: 60px;"><div class="container">
+
+    
+
+    <h1>Diagrams</h1>
+    <p>This is of the diagrams API.</p>   
+
+
+    <h1>Paths</h1>
+    <div class="accordion" id="accordionExample">
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                    
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#228B22;">GET</span> Diagrams</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="get">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagrams">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Returns all of the diagrams.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="limit"></td>
+                                        <td><input type="text" class="form-control" id="required" value="false"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="page"></td>
+                                        <td><input type="text" class="form-control" id="required" value="false"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="search"></td>
+                                        <td><input type="text" class="form-control" id="required" value="false"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="tags"></td>
+                                        <td><input type="text" class="form-control" id="required" value="false"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                    
+                                        <p><strong>Content</strong></p>  
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Schema</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="Diagrams"></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table>                                                                          
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#FF5733;">POST</span> Diagram</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="post">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Adds a diagram.">
+                        </div> 
+                        
+
+                        
+
+                        
+                            <h5>Request Body:</h5>
+                            <div class="mb-3">
+                                <label for="response-status-code" class="form-label">Request Body:</label>
+                                <input type="email" class="form-control" id="response-status-code" placeholder="Diagram">
+                            </div>                              
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="201">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="201 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                    
+                                        <p><strong>Content</strong></p>  
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Schema</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="Diagram"></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table>                                                                          
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="options">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="">
+                        </div>                        
+
+                        
+
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Methods"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Headers"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                      
+
+                    </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams/{diagram_id}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                    
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#228B22;">GET</span> Diagram</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="get">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Return and individual diagrams.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                    
+                                        <p><strong>Content</strong></p>  
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Schema</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="Diagram"></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table>                                                                          
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#FFC300;">PUT</span> Diagram</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="put">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Updates a diagram.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                        
+                            <h5>Request Body:</h5>
+                            <div class="mb-3">
+                                <label for="response-status-code" class="form-label">Request Body:</label>
+                                <input type="email" class="form-control" id="response-status-code" placeholder="Diagram">
+                            </div>                              
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="204">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="204 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#C70039;">DELETE</span> Diagram</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="delete">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Deltes a diagram.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="204">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="204 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="options">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="">
+                        </div>                        
+
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Methods"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Headers"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                      
+
+                    </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams/{diagram_id}/tags" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                    
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#228B22;">GET</span> Diagram Tags</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="get">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram Tags">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Returns all of the tags for a diagram.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                    
+                                        <p><strong>Content</strong></p>  
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Schema</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="Tags"></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table>                                                                          
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#FF5733;">POST</span> Diagram Tag</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="post">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram Tag">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Adds a tag for a diagram.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                        
+                            <h5>Request Body:</h5>
+                            <div class="mb-3">
+                                <label for="response-status-code" class="form-label">Request Body:</label>
+                                <input type="email" class="form-control" id="response-status-code" placeholder="Diagram">
+                            </div>                              
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="201">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="201 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="options">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="">
+                        </div>                        
+
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Methods"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Headers"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                      
+
+                    </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams/{diagram_id}/tags/{tag_id}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                    
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#C70039;">DELETE</span> Diagram Tag</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="delete">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="Diagram Tag">
+                        </div>                        
+
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="Deletes a diagram tag.">
+                        </div> 
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="tag_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="204">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="204 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                     
+                           
+                                                       
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="options">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="">
+                        </div>                        
+
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="tag_id"></td>
+                                        <td><input type="text" class="form-control" id="required" value="true"></td>
+                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="200">
+                                    </div>                            
+
+                                    
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="200 response">
+                                        </div>                                       
+                                    
+
+                                    
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Origin"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Methods"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                             
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="Access-Control-Allow-Headers"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table> 
+                                                                        
+
+                                    
+                                        <p><strong>Content</strong></p>  
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Schema</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="Diagram"></td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table>                                                                          
+                                     
+                           
+                                                       
+                                                            
+
+                      
+
+                    </div>
+                </div>
+            </div>              
+
+        
+
+    </div>
+
+    <h1>Response Bodies</h1>
+    <div class="accordion" id="accordionExample">
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="requestBody-Diagram"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="Diagram" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                     
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Required:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="true">
+                    </div>                      
+
+                    
+                        <p><strong>Content:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Media Type</th>
+                                <th scope="col">Schema</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td><input type="text" class="form-control" id="type" value="application/json"></td>
+                                    <td><input type="text" class="form-control" id="description" value="Diagram"></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>                         
+                                         
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+    </div> 
+
+    <h1>Schema</h1>
+    <div class="accordion" id="accordionExample">
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="schema-Diagrams"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="Diagrams" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                         
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Type:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="array">
+                    </div> 
+                    
+                    
+                        <p><strong>Items:</strong></p>
+                        <div class="mb-3">
+                            <label for="response-description" class="form-label">Schema:</label>
+                            <input type="email" class="form-control" id="response-description" placeholder="Diagram">
+                        </div>                         
+                    
+
+                    
+
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="schema-Tag"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="Tag" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                         
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Type:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="object">
+                    </div> 
+                    
+                    
+
+                    
+                        <p><strong>Properties:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Descripton</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="name"></td>
+                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="description"></td>
+                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>                         
+                    
+
+                    
+                        <p><strong>Required:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="name"></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>                            
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="schema-Diagram"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="Diagram" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                         
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Type:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="object">
+                    </div> 
+                    
+                    
+
+                    
+                        <p><strong>Properties:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Descripton</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="name"></td>
+                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="version"></td>
+                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="description"></td>
+                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="url"></td>
+                                    <td><input type="text" class="form-control" id="type" value="string"></td>
+                                    <td><input type="text" class="form-control" id="description" value=""></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>                         
+                    
+
+                    
+                        <p><strong>Required:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="name"></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>                            
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="schema-Tags"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="Tags" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                         
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Type:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="array">
+                    </div> 
+                    
+                    
+                        <p><strong>Items:</strong></p>
+                        <div class="mb-3">
+                            <label for="response-description" class="form-label">Schema:</label>
+                            <input type="email" class="form-control" id="response-description" placeholder="Tag">
+                        </div>                         
+                    
+
+                    
+
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+    </div>    
+
+</div></main>
+
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <span class="text-muted">Footer</span>
+  </div>
+</footer>
+
+<script src="http://localhost:4000/assets/js/bootstrap.js"></script>    
+
+  </body>
+</html>

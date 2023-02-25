@@ -1,0 +1,293 @@
+---
+layout: default
+title: Editor
+---
+
+
+<div class="container">
+
+    {% assign api = site.data.api %}
+
+    <h1>{{ api.info.title }}</h1>
+    <p>{{ api.info.description }}</p>   
+
+
+    <h1>Paths</h1>
+    <div class="accordion" id="accordionExample">
+
+        {% for path in api.paths %}
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ path[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                    
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    {% for method in path[1] %}
+
+                        {% if method[0] == 'get' %}
+                            {% assign method_color = "#228B22" %}
+                        {% elsif method[0] == 'post' %}
+                            {% assign method_color = "#FF5733" %}
+                        {% elsif method[0] == 'put' %}
+                            {% assign method_color = "#FFC300" %} 
+                        {% elsif method[0] == 'delete' %}
+                            {% assign method_color = "#C70039" %}                                                                                     
+                        {% elsif method[0] == 'options' %}
+                            {% assign method_color = "#0006FF" %}                             
+                        {% endif %}
+
+                        <h4><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</h4>
+
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="method" value="{{ method[0] }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="summary" value="{{ method[1].summary }}">
+                        </div>                        
+
+                        {% if method[1].description %}
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" value="{{ method[1].description }}">
+                        </div> 
+                        {% endif %}
+
+                        {% if method[1].parameters %}
+                            <h5>Parameters</h5>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Required</th>
+                                    <th scope="col">Descripton</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for parameter in method[1].parameters %}  
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="name" value="{{ parameter.name }}"></td>
+                                        <td><input type="text" class="form-control" id="required" value="{{ parameter.required }}"></td>
+                                        <td><input type="text" class="form-control" id="description" value="{{ parameter.description }}"></td>
+                                    </tr>
+                                  {% endfor %}  
+                                </tbody>
+                            </table>
+                        {% endif %}
+
+                        {% if method[1].requestBody %}
+                            <h5>Request Body:</h5>
+                            <div class="mb-3">
+                                <label for="response-status-code" class="form-label">Request Body:</label>
+                                <input type="email" class="form-control" id="response-status-code" placeholder="{{ method[1].requestBody['$ref'] | replace: '#/components/requestBodies/','' }}">
+                            </div>                              
+                        {% endif %}  
+                        
+                        {% if method[1].responses %}
+                            <h5>Responses:</h5>
+                            {% for response in method[1].responses %}
+
+                                    <div class="mb-3">
+                                        <label for="response-status-code" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="response-status-code" placeholder="{{ response[0] }}">
+                                    </div>                            
+
+                                    {% if response[1].description %}
+                                        <div class="mb-3">
+                                            <label for="response-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="response-description" placeholder="{{ response[1].description }}">
+                                        </div>                                       
+                                    {% endif %}
+
+                                    {% if response[1].headers %}
+                                        <p><strong>Headers</strong></p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Descripton</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for header in response[1].headers %} 
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="{{ header[0] }}"></td>
+                                                    <td><input type="text" class="form-control" id="type" value="{{ header[1].schema.type }}"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="{{ header[1].schema.description }}"></td>
+                                                </tr>
+                                            {% endfor %}  
+                                            </tbody>
+                                        </table> 
+                                    {% endif %}                                    
+
+                                    {% if response[1].content %}
+                                        <p><strong>Content</strong></p>  
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Schema</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for content in response[1].content %}
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="name" value="{{ content[0] }}"></td>
+                                                    <td><input type="text" class="form-control" id="description" value="{{ content[1].schema['$ref'] | replace: '#/components/schemas/','' }}"></td>
+                                                </tr>
+                                            {% endfor %}  
+                                            </tbody>
+                                        </table>                                                                          
+                                    {% endif %} 
+                           
+                            {% endfor %}                           
+                        {% endif %}                                    
+
+                    {% endfor %}  
+
+                    </div>
+                </div>
+            </div>              
+
+        {% endfor %}
+
+    </div>
+
+    <h1>Response Bodies</h1>
+    <div class="accordion" id="accordionExample">
+
+        {% for requestBody in api.components.requestBodies %}
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="requestBody-{{ requestBody[0] }}"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ requestBody[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                     
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Required:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="{{ requestBody[1].required }}">
+                    </div>                      
+
+                    {% if requestBody[1].content %}
+                        <p><strong>Content:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Media Type</th>
+                                <th scope="col">Schema</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for content in requestBody[1].content %}
+                                <tr>
+                                    <td><input type="text" class="form-control" id="type" value="{{ content[0] }}"></td>
+                                    <td><input type="text" class="form-control" id="description" value="{{ content[1].schema['$ref'] | replace: '#/components/schemas/','' }}"></td>
+                                </tr>
+                            {% endfor %}  
+                            </tbody>
+                        </table>                         
+                    {% endif %}                     
+
+                </div>
+                </div>
+            </div>              
+
+        {% endfor %}
+
+    </div> 
+
+    <h1>Schema</h1>
+    <div class="accordion" id="accordionExample">
+
+        {% for schema in api.components.schemas %}
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <a name="schema-{{ schema[0] }}"></a>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ schema[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                    </div>                         
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <div class="mb-3">
+                        <label for="response-description" class="form-label">Type:</label>
+                        <input type="email" class="form-control" id="response-description" placeholder="{{ schema[1].type }}">
+                    </div> 
+                    
+                    {% if schema[1].items %}
+                        <p><strong>Items:</strong></p>
+                        <div class="mb-3">
+                            <label for="response-description" class="form-label">Schema:</label>
+                            <input type="email" class="form-control" id="response-description" placeholder="{{ schema[1].items['$ref'] | replace: '#/components/schemas/','' }}">
+                        </div>                         
+                    {% endif %}
+
+                    {% if schema[1].properties %}
+                        <p><strong>Properties:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Descripton</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for property in schema[1].properties %}
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="{{ property[0] }}"></td>
+                                    <td><input type="text" class="form-control" id="type" value="{{ property[1].type }}"></td>
+                                    <td><input type="text" class="form-control" id="description" value="{{ property[1].description }}"></td>
+                                </tr>
+                            {% endfor %}  
+                            </tbody>
+                        </table>                         
+                    {% endif %}
+
+                    {% if schema[1].required %}
+                        <p><strong>Required:</strong></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for required in schema[1].required %}
+                                <tr>
+                                    <td><input type="text" class="form-control" id="name" value="{{ required }}"></td>
+                                </tr>
+                            {% endfor %}  
+                            </tbody>
+                        </table>                            
+                    {% endif %}                  
+
+                </div>
+                </div>
+            </div>              
+
+        {% endfor %}
+
+    </div>    
+
+</div>

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Diagrams
+title: Documentation
 ---
 
 
@@ -28,7 +28,19 @@ title: Diagrams
                     
                     {% for method in path[1] %}
 
-                        <h4>{{ method[0] | upcase }} {{ method[1].summary }}</h4>
+                        {% if method[0] == 'get' %}
+                            {% assign method_color = "#228B22" %}
+                        {% elsif method[0] == 'post' %}
+                            {% assign method_color = "#FF5733" %}
+                        {% elsif method[0] == 'put' %}
+                            {% assign method_color = "#FFC300" %} 
+                        {% elsif method[0] == 'delete' %}
+                            {% assign method_color = "#C70039" %}                                                                                     
+                        {% elsif method[0] == 'options' %}
+                            {% assign method_color = "#0006FF" %}                             
+                        {% endif %}
+
+                        <h4><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</h4>
 
                         {% if method[1].description %}
                             <p>{{ method[1].description }}</p>
