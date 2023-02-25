@@ -1,0 +1,12 @@
+{
+  "name": "Diagrams",
+  "version": "1.0.0",
+  "description": "This is for managing diagrams.",
+  "main": "index.js",
+  "dependencies": {
+    "vandium": "*",
+    "mysql": "*",
+    "async": "*",
+    "pool": "*"
+  }
+}
