@@ -8,11 +8,9 @@
    <meta name="description" content="">
    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
    <meta name="generator" content="Hugo 0.88.1">
-   
+  
    <title>{{ page.title }}</title>
-
-   <!---<link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sticky-footer-navbar/">--->
-   <link href="{{ site.url }}/assets/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+   <link href="{{ site.url }}/assets/css/bootstrap.min.css" rel="stylesheet">
    <meta name="theme-color" content="#7952b3">
     <style>
       .bd-placeholder-img {
@@ -61,52 +59,8 @@
             <a class="nav-link active" aria-current="page" href="{{ site.url }}/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ site.url }}/control/editor/">Editor</a>
-          </li>          
-          <li class="nav-item">
-            <a class="nav-link" href="{{ site.url }}/control/blueprints/">Blueprints</a>
-          </li>          
-          <li class="nav-item">
-            <a class="nav-link" href="{{ site.url }}/control/elements/">Elements</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="qaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Q&A
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="qaDropdown">
-              <a class="dropdown-item" href="{{ site.url }}/control/questions/">Questions</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/answers/">Answers</a>
-            </ul>
-          </li>  
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Resources
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
-              <a class="dropdown-item" href="{{ site.url }}/control/blogs/">Blogs</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/decks/">Decks</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/organizations/">Organizations</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/projects/">Projects</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/people/">People</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/links/">Links</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/slides/">Slides</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/tools/">Tools</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/videos/">Videos</a>
-            </ul>
-          </li>     
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="structureDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Structure
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="structureDropdown">
-              <a class="dropdown-item" href="{{ site.url }}/control/outcomes/">Outcomes</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/specifications/">Specifications</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/standards/">Standards</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/roles/">Roles</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/rules/">Rules</a>
-              <a class="dropdown-item" href="{{ site.url }}/control/vocabularies/">Vocabularies</a>
-            </ul>
-          </li>                                                                   
+            <a class="nav-link active" aria-current="page" href="{{ site.url }}/editor/">Editor</a>
+          </li>                                                                            
         </ul>
         <form class="d-flex">
           <!--<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -117,7 +71,7 @@
   </nav>
 </header>
 
-<main class="flex-shrink-0">{{ content }}</main>
+<main class="flex-shrink-0" style="margin-top: 60px;">{{ content }}</main>
 
 <footer class="footer mt-auto py-3 bg-light">
   <div class="container">

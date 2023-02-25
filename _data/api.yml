@@ -2,9 +2,13 @@ openapi: 3.0.0
 info:
   title: Diagrams
   description: This is of the diagrams API.
+servers:
+  - url:   
 paths:
   /diagrams:
     get:
+      summary: Diagrams
+      description: Returns all of the diagrams.
       parameters:
         - name: limit
           in: query
@@ -62,6 +66,8 @@ paths:
         contentHandling: CONVERT_TO_TEXT
         type: aws
     post:
+      summary: Diagram
+      description: Adds a diagram.
       requestBody:
         $ref: "#/components/requestBodies/Diagram"
       responses:
@@ -114,63 +120,13 @@ paths:
         requestTemplates:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
-        type: mock
-  /diagrams/bookmarklet:
+        type: mock       
+  "/diagrams/{diagram_id}":
     get:
+      summary: Diagram
+      description: Return and individual diagrams.    
       parameters:
-        - name: description
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: url
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: key
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: name
-          in: query
-          required: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: 200 response
-          content:
-            text/html:
-              schema:
-                $ref: "#/components/schemas/Diagram"
-      x-amazon-apigateway-integration:
-        type: aws
-        httpMethod: POST
-        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:007596076917:function:m-s-diagramsbookmarklet-g/invocations
-        responses:
-          default:
-            statusCode: "200"
-        requestParameters:
-          integration.request.querystring.url: method.request.querystring.url
-          integration.request.querystring.key: method.request.querystring.key
-          integration.request.querystring.name: method.request.querystring.name
-          integration.request.querystring.description: method.request.querystring.description
-        requestTemplates:
-          application/json: |-
-            {
-                "name" : "$input.params('name')",
-                "description" : "$input.params('description')",
-                "url" : "$input.params('url')",
-                "key" : "$input.params('key')"
-            }
-        passthroughBehavior: when_no_templates
-        contentHandling: CONVERT_TO_TEXT        
-  "/diagrams/{link_id}":
-    get:
-      parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -190,25 +146,27 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-link-g/invocations
+        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations
         responses:
           default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
         requestParameters:
-          integration.request.path.link_id: method.request.path.link_id
+          integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
           application/json: |-
             {
-                "link_id" : "$input.params('link_id')"
+                "diagram_id" : "$input.params('diagram_id')"
             }
         passthroughBehavior: when_no_templates
         contentHandling: CONVERT_TO_TEXT
         type: aws
     put:
+      summary: Diagram
+      description: Updates a diagram.    
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -226,26 +184,28 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-link-pu/invocations
+        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations
         responses:
           default:
             statusCode: "204"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
         requestParameters:
-          integration.request.path.link_id: method.request.path.link_id
+          integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
           application/json: |-
             {
-                "link_id" : "$input.params('link_id')",
+                "diagram_id" : "$input.params('diagram_id')",
                 "body" : $input.json('$') 
             }
         passthroughBehavior: when_no_templates
         contentHandling: CONVERT_TO_TEXT
         type: aws
     delete:
+      summary: Diagram
+      description: Deltes a diagram.    
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -261,25 +221,25 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-link-d/invocations
+        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations
         responses:
           default:
             statusCode: "204"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
         requestParameters:
-          integration.request.path.link_id: method.request.path.link_id
+          integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
           application/json: |-
             {
-                "link_id" : "$input.params('link_id')"
+                "diagram_id" : "$input.params('diagram_id')"
             }
         passthroughBehavior: when_no_templates
         contentHandling: CONVERT_TO_TEXT
         type: aws
     options:
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -310,10 +270,12 @@ paths:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
         type: mock
-  "/diagrams/{link_id}/tags":
+  "/diagrams/{diagram_id}/tags":
     get:
+      summary: Diagram Tags
+      description: Returns all of the tags for a diagram.    
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -333,25 +295,27 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-link-tags-g/invocations
+        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations
         responses:
           default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
         requestParameters:
-          integration.request.path.link_id: method.request.path.link_id
+          integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
           application/json: |-
             {
-                "link_id" : "$input.params('link_id')"
+                "diagram_id" : "$input.params('diagram_id')"
             }
         passthroughBehavior: when_no_templates
         contentHandling: CONVERT_TO_TEXT
         type: aws
     post:
+      summary: Diagram Tag
+      description: Adds a tag for a diagram.   
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -369,18 +333,18 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-link-tags-po/invocations
+        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations
         responses:
           default:
             statusCode: "201"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
         requestParameters:
-          integration.request.path.link_id: method.request.path.link_id
+          integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
           application/json: |-
             {
-                "link_id" : "$input.params('link_id')",
+                "diagram_id" : "$input.params('diagram_id')",
                 "tag_id" : "$input.json('$.tag_id')"
             }
         passthroughBehavior: when_no_templates
@@ -388,7 +352,7 @@ paths:
         type: aws
     options:
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -419,10 +383,12 @@ paths:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
         type: mock
-  "/diagrams/{link_id}/tags/{tag_id}":
+  "/diagrams/{diagram_id}/tags/{tag_id}":
     delete:
+      summary: Diagram Tag
+      description: Deletes a diagram tag.
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -443,7 +409,7 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-link-tags-tag-d/invocations
+        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations
         responses:
           default:
             statusCode: "204"
@@ -451,11 +417,11 @@ paths:
               method.response.header.Access-Control-Allow-Origin: "'*'"
         requestParameters:
           integration.request.path.tag_id: method.request.path.tag_id
-          integration.request.path.link_id: method.request.path.link_id
+          integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
           application/json: |-
             {
-                "link_id" : "$input.params('link_id')",
+                "diagram_id" : "$input.params('diagram_id')",
                 "tag_id" : "$input.params('tag_id')"
             }
         passthroughBehavior: when_no_templates
@@ -463,7 +429,7 @@ paths:
         type: aws
     options:
       parameters:
-        - name: link_id
+        - name: diagram_id
           in: path
           required: true
           schema:
@@ -503,8 +469,6 @@ paths:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
         type: mock
-servers:
-  - url: https://78yhdhsr60.execute-api.us-west-1.amazonaws.com/staging
 components:
   requestBodies:
     Diagram:
