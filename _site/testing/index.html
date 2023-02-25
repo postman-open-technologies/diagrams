@@ -1,0 +1,1006 @@
+
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="">
+   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+   <meta name="generator" content="Hugo 0.88.1">
+  
+   <title>Documentation</title>
+   <link href="http://localhost:4000/assets/css/bootstrap.min.css" rel="stylesheet">
+   <meta name="theme-color" content="#7952b3">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Cookies.js - http://github.com/ScottHamper/Cookies -->
+    <script src="http://localhost:4000/assets/js/cookies.js"></script>
+
+    <script>
+
+        function getUrlVar(key){
+            var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
+            return result && unescape(result[1]) || "";
+        }
+
+    </script>
+
+  </head>
+  <body class="d-flex flex-column h-100">
+    
+<header>
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="http://localhost:4000/">Documentation</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/editor/">Editor</a>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/client/">Client</a>
+          </li>                                                                                      
+        </ul>
+        <form class="d-flex">
+          <!--<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>-->
+        </form>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="flex-shrink-0" style="margin-top: 60px;"><div class="container">
+
+    
+
+    <h1>Diagrams</h1>
+    <p>This is of the diagrams API.</p>   
+
+
+    <h1>Paths</h1>
+    <div class="accordion" id="accordionExample">
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2>/diagrams</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#228B22;">GET</span> Diagrams</h4>
+
+                        
+                            <p>Returns all of the diagrams.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>limit (false)
+                            
+                                <li>page (false)
+                            
+                                <li>search (false)
+                            
+                                <li>tags (false)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                    
+                                        <ul>
+                                            <li>Content
+                                                <ul>                                    
+                                                    
+                                                        <li>application/json - <a href="#schema-Diagrams">Diagrams</a></li>
+                                                    
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#FF5733;">POST</span> Diagram</h4>
+
+                        
+                            <p>Adds a diagram.</p>
+                        
+
+                        
+
+                        
+                            <h5>Request Body:</h5>
+                            <ul>
+                                <li><a href="#requestBody-Diagram">Diagram</a></li>
+                            </ul>
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>201</strong>
+
+                                     - 201 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                    
+                                        <ul>
+                                            <li>Content
+                                                <ul>                                    
+                                                    
+                                                        <li>application/json - <a href="#schema-Diagram">Diagram</a></li>
+                                                    
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        
+
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Methods (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Headers (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2>/diagrams/{diagram_id}</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#228B22;">GET</span> Diagram</h4>
+
+                        
+                            <p>Return and individual diagrams.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                    
+                                        <ul>
+                                            <li>Content
+                                                <ul>                                    
+                                                    
+                                                        <li>application/json - <a href="#schema-Diagram">Diagram</a></li>
+                                                    
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#FFC300;">PUT</span> Diagram</h4>
+
+                        
+                            <p>Updates a diagram.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                        
+                            <h5>Request Body:</h5>
+                            <ul>
+                                <li><a href="#requestBody-Diagram">Diagram</a></li>
+                            </ul>
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>204</strong>
+
+                                     - 204 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#C70039;">DELETE</span> Diagram</h4>
+
+                        
+                            <p>Deltes a diagram.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>204</strong>
+
+                                     - 204 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Methods (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Headers (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2>/diagrams/{diagram_id}/tags</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#228B22;">GET</span> Diagram Tags</h4>
+
+                        
+                            <p>Returns all of the tags for a diagram.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                    
+                                        <ul>
+                                            <li>Content
+                                                <ul>                                    
+                                                    
+                                                        <li>application/json - <a href="#schema-Tags">Tags</a></li>
+                                                    
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#FF5733;">POST</span> Diagram Tag</h4>
+
+                        
+                            <p>Adds a tag for a diagram.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                        
+                            <h5>Request Body:</h5>
+                            <ul>
+                                <li><a href="#requestBody-Diagram">Diagram</a></li>
+                            </ul>
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>201</strong>
+
+                                     - 201 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Methods (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Headers (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2>/diagrams/{diagram_id}/tags/{tag_id}</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    
+
+                        
+
+                        <h4><span style="color:#C70039;">DELETE</span> Diagram Tag</h4>
+
+                        
+                            <p>Deletes a diagram tag.</p>
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                            
+                                <li>tag_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>204</strong>
+
+                                     - 204 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                    
+
+                        
+
+                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
+
+                        
+
+                        
+                            <h5>Parameters</h5>
+                            <ul>
+                            
+                                <li>diagram_id (true)
+                            
+                                <li>tag_id (true)
+                              
+                            </ul>
+                        
+
+                          
+                        
+                        
+                            <h5>Responses:</h5>
+                            <ul>
+                            
+                                <li>
+                                    <strong>200</strong>
+
+                                     - 200 response
+
+                                    
+                                    <ul>
+                                        <li>Headers
+                                            <ul>
+                                            
+                                                <li>Access-Control-Allow-Origin (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Methods (string)</li>
+                                            
+                                                <li>Access-Control-Allow-Headers (string)</li>
+                                                  
+                                            </ul>     
+                                        </li>
+                                    </ul>                  
+                                       
+
+                                    
+                                        <ul>
+                                            <li>Content
+                                                <ul>                                    
+                                                    
+                                                        <li>application/json - <a href="#schema-Diagram">Diagram</a></li>
+                                                    
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                     
+
+                                </li>                             
+                               
+                            </ul>                          
+                                                            
+
+                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+    </div>
+
+    <h1>Response Bodies</h1>
+    <div class="accordion" id="accordionExample">
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2><a name="requestBody-Diagram"></a>Diagram</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <p><strong>Required:</strong> true</p>
+
+                    
+                        <p><strong>Content:</strong></p>
+                        <ul>                                
+                            
+                                <li><a href="#schema-Diagram">Diagram</a> (application/json)</li>
+                            
+                        </ul>
+                                         
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+    </div> 
+
+    <h1>Schema</h1>
+    <div class="accordion" id="accordionExample">
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2><a name="schema-Diagrams"></a>Diagrams</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <p><strong>Type:</strong> array</p>
+
+                    
+                        <p><strong>Items:</strong></p>
+                        <ul>
+                            <li><a href="#Diagram">Diagram</a></li>
+                        </ul>
+                    
+
+                    
+
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2><a name="schema-Tag"></a>Tag</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <p><strong>Type:</strong> object</p>
+
+                    
+
+                    
+                        <p><strong>Properties:</strong></p>
+                        <ul>
+                        
+                            <li>name (string)</li>                        
+                        
+                            <li>description (string)</li>                        
+                          
+                        </ul>
+                    
+
+                    
+                        <p><strong>Required:</strong></p>
+                        <ul>
+                        
+                            <li>name</li>                        
+                          
+                        </ul>  
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2><a name="schema-Diagram"></a>Diagram</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <p><strong>Type:</strong> object</p>
+
+                    
+
+                    
+                        <p><strong>Properties:</strong></p>
+                        <ul>
+                        
+                            <li>name (string)</li>                        
+                        
+                            <li>version (string)</li>                        
+                        
+                            <li>description (string)</li>                        
+                        
+                            <li>url (string)</li>                        
+                          
+                        </ul>
+                    
+
+                    
+                        <p><strong>Required:</strong></p>
+                        <ul>
+                        
+                            <li>name</li>                        
+                          
+                        </ul>  
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2><a name="schema-Tags"></a>Tags</h2>
+                </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    
+                    <p><strong>Type:</strong> array</p>
+
+                    
+                        <p><strong>Items:</strong></p>
+                        <ul>
+                            <li><a href="#Tag">Tag</a></li>
+                        </ul>
+                    
+
+                    
+
+                                      
+
+                </div>
+                </div>
+            </div>              
+
+        
+
+    </div>    
+
+</div></main>
+
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <span class="text-muted">Footer</span>
+  </div>
+</footer>
+
+<script src="http://localhost:4000/assets/js/bootstrap.js"></script>    
+
+  </body>
+</html>
