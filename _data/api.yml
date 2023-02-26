@@ -2,8 +2,9 @@ openapi: 3.0.0
 info:
   title: Diagrams
   description: This is of the diagrams API.
+  version: "v1"
 servers:
-  - url: null
+  - url: "https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"
 paths:
   /diagrams:
     get:
@@ -13,21 +14,19 @@ paths:
         - name: limit
           in: query
           required: false
+          example: 25
           schema:
             type: string
         - name: page
           in: query
           required: false
+          example: 0
           schema:
             type: string
         - name: search
           in: query
           required: false
-          schema:
-            type: string
-        - name: tags
-          in: query
-          required: false
+          example: ''
           schema:
             type: string
       responses:
@@ -484,6 +483,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Diagram'
+          example:
+            name: Example Image
+            description: The description.
+            url: https://example.com/
+            image: https://example.com/image.jpeg             
       required: true
   securitySchemes:
     api_key:
@@ -495,6 +499,12 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Diagram'
+      example:
+        - id: 857
+          name: Example Image
+          description: The description.
+          url: https://example.com/
+          image: https://example.com/image.jpeg          
     Tag:
       type: object
       required:
@@ -504,6 +514,10 @@ components:
           type: string
         description:
           type: string
+      example:
+        id: 857
+        name: Example Tag
+        description: The description.
     Diagram:
       type: object
       required:
@@ -517,7 +531,17 @@ components:
           type: string
         url:
           type: string
+      example:
+        id: 857
+        name: Example Image
+        description: The description.
+        url: https://example.com/
+        image: https://example.com/image.jpeg            
     Tags:
       type: array
       items:
         $ref: '#/components/schemas/Tag'
+      example:
+        - id: 1
+          name: Example Image
+          description: The description.
