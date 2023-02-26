@@ -3,7 +3,7 @@ info:
   title: Diagrams
   description: This is of the diagrams API.
 servers:
-  - url:   
+  - url: null
 paths:
   /diagrams:
     get:
@@ -31,7 +31,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -40,15 +40,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Diagrams"
+                $ref: '#/components/schemas/Diagrams'
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.querystring.page: method.request.querystring.page
           integration.request.querystring.limit: method.request.querystring.limit
@@ -69,9 +70,9 @@ paths:
       summary: Diagram
       description: Adds a diagram.
       requestBody:
-        $ref: "#/components/requestBodies/Diagram"
+        $ref: '#/components/requestBodies/Diagram'
       responses:
-        "201":
+        '201':
           description: 201 response
           headers:
             Access-Control-Allow-Origin:
@@ -80,23 +81,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Diagram"
+                $ref: '#/components/schemas/Diagram'
       security:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations
         responses:
           default:
-            statusCode: "201"
+            statusCode: '201'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         passthroughBehavior: when_no_match
         contentHandling: CONVERT_TO_TEXT
         type: aws
     options:
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -111,20 +113,20 @@ paths:
       x-amazon-apigateway-integration:
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Securit\
-                y-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: '''GET,OPTIONS,POST'''
+              method.response.header.Access-Control-Allow-Headers: >-
+                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestTemplates:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
-        type: mock       
-  "/diagrams/{diagram_id}":
+        type: mock
+  '/diagrams/{diagram_id}':
     get:
       summary: Diagram
-      description: Return and individual diagrams.    
+      description: Return and individual diagrams.
       parameters:
         - name: diagram_id
           in: path
@@ -132,7 +134,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -141,17 +143,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Diagram"
+                $ref: '#/components/schemas/Diagram'
       security:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
@@ -164,7 +167,7 @@ paths:
         type: aws
     put:
       summary: Diagram
-      description: Updates a diagram.    
+      description: Updates a diagram.
       parameters:
         - name: diagram_id
           in: path
@@ -172,9 +175,9 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/components/requestBodies/Diagram"
+        $ref: '#/components/requestBodies/Diagram'
       responses:
-        "204":
+        '204':
           description: 204 response
           headers:
             Access-Control-Allow-Origin:
@@ -184,12 +187,13 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations
         responses:
           default:
-            statusCode: "204"
+            statusCode: '204'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
@@ -203,7 +207,7 @@ paths:
         type: aws
     delete:
       summary: Diagram
-      description: Deltes a diagram.    
+      description: Deltes a diagram.
       parameters:
         - name: diagram_id
           in: path
@@ -211,7 +215,7 @@ paths:
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: 204 response
           headers:
             Access-Control-Allow-Origin:
@@ -221,12 +225,13 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations
         responses:
           default:
-            statusCode: "204"
+            statusCode: '204'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
@@ -245,7 +250,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -260,20 +265,20 @@ paths:
       x-amazon-apigateway-integration:
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,DELETE,PUT'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Securit\
-                y-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: '''GET,OPTIONS,DELETE,PUT'''
+              method.response.header.Access-Control-Allow-Headers: >-
+                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestTemplates:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
         type: mock
-  "/diagrams/{diagram_id}/tags":
+  '/diagrams/{diagram_id}/tags':
     get:
       summary: Diagram Tags
-      description: Returns all of the tags for a diagram.    
+      description: Returns all of the tags for a diagram.
       parameters:
         - name: diagram_id
           in: path
@@ -281,7 +286,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -290,17 +295,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tags"
+                $ref: '#/components/schemas/Tags'
       security:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
@@ -313,7 +319,7 @@ paths:
         type: aws
     post:
       summary: Diagram Tag
-      description: Adds a tag for a diagram.   
+      description: Adds a tag for a diagram.
       parameters:
         - name: diagram_id
           in: path
@@ -321,9 +327,9 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/components/requestBodies/Diagram"
+        $ref: '#/components/requestBodies/Diagram'
       responses:
-        "201":
+        '201':
           description: 201 response
           headers:
             Access-Control-Allow-Origin:
@@ -333,12 +339,13 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations
         responses:
           default:
-            statusCode: "201"
+            statusCode: '201'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.path.diagram_id: method.request.path.diagram_id
         requestTemplates:
@@ -358,7 +365,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -373,17 +380,17 @@ paths:
       x-amazon-apigateway-integration:
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Securit\
-                y-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: '''GET,OPTIONS,POST'''
+              method.response.header.Access-Control-Allow-Headers: >-
+                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestTemplates:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
         type: mock
-  "/diagrams/{diagram_id}/tags/{tag_id}":
+  '/diagrams/{diagram_id}/tags/{tag_id}':
     delete:
       summary: Diagram Tag
       description: Deletes a diagram tag.
@@ -399,7 +406,7 @@ paths:
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: 204 response
           headers:
             Access-Control-Allow-Origin:
@@ -409,12 +416,13 @@ paths:
         - api_key: []
       x-amazon-apigateway-integration:
         httpMethod: POST
-        uri: arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations
+        uri: >-
+          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations
         responses:
           default:
-            statusCode: "204"
+            statusCode: '204'
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestParameters:
           integration.request.path.tag_id: method.request.path.tag_id
           integration.request.path.diagram_id: method.request.path.diagram_id
@@ -440,7 +448,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: 200 response
           headers:
             Access-Control-Allow-Origin:
@@ -455,16 +463,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Diagram"
+                $ref: '#/components/schemas/Diagram'
       x-amazon-apigateway-integration:
         responses:
           default:
-            statusCode: "200"
+            statusCode: '200'
             responseParameters:
-              method.response.header.Access-Control-Allow-Methods: "'DELETE,OPTIONS'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Securit\
-                y-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: '''DELETE,OPTIONS'''
+              method.response.header.Access-Control-Allow-Headers: >-
+                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+              method.response.header.Access-Control-Allow-Origin: '''*'''
         requestTemplates:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
@@ -475,7 +483,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Diagram"
+            $ref: '#/components/schemas/Diagram'
       required: true
   securitySchemes:
     api_key:
@@ -486,7 +494,7 @@ components:
     Diagrams:
       type: array
       items:
-        $ref: "#/components/schemas/Diagram"
+        $ref: '#/components/schemas/Diagram'
     Tag:
       type: object
       required:
@@ -512,4 +520,4 @@ components:
     Tags:
       type: array
       items:
-        $ref: "#/components/schemas/Tag"
+        $ref: '#/components/schemas/Tag'
