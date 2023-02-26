@@ -119,6 +119,207 @@
         </div>	        					
     </div>
 
+    <script>
+        var token = getUrlVar('token');	
+        if(token){
+            document.getElementById('token').value = token;		
+            changeToken(token);
+        }
+
+        var gtoken = getUrlVar('gtoken');	
+        if(gtoken){
+            document.getElementById('gtoken').value = gtoken;		
+            changeGToken(gtoken);
+        }							
+
+        var stored_token = Cookies.get('token');
+        if(stored_token){
+            document.getElementById('token').value = stored_token;	
+        }
+
+        var stored_gtoken = Cookies.get('gtoken');
+        if(stored_gtoken){
+            document.getElementById('gtoken').value = stored_gtoken;	
+        }	
+
+        const base_url = 'https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging';
+        
+        function sendGET(path,method){
+
+            token = document.getElementById("token").value;	
+
+            var openapi = JSON.parse(document.getElementById('openapi').value);
+
+            var apply_path = path;
+            var parameters = openapi.paths[path][method].parameters;
+
+            for (var i = 0; i < parameters.length; i++) {
+                if(parameters[i].in == 'path'){
+                    var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                    apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                }            
+            }
+
+            const options = {
+                method: method,
+                headers: {
+                    "x-api-key": token
+                }
+            };	
+
+            fetch(base_url + apply_path,options)
+                .then(function(response) {
+                    if (!response.ok) {
+                        console.log('Error with Status Code: ' + response.status);
+                        return;
+                    }
+                    response.json().then(function(data) {	
+
+                        document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
+                        document.getElementById(path + '-' + method).style.display = '';
+
+                    });
+                })
+                .catch(function(err) {
+                    console.log('Error: ' + err);
+            });
+
+            }   
+            
+            function sendPOST(path,method){
+
+                token = document.getElementById("token").value;	
+
+                var openapi = JSON.parse(document.getElementById('openapi').value);
+
+                var apply_path = path;
+                var parameters = openapi.paths[path][method].parameters;
+
+                for (var i = 0; i < parameters.length; i++) {
+                    if(parameters[i].in == 'path'){
+                        var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                        apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                    }            
+                }
+
+                var body = document.getElementById(path + '-' + method + '-body').value;
+                const options = {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": token
+                    },
+                    body: body
+                };	
+
+                fetch(base_url + apply_path,options)
+                    .then(function(response) {
+                        if (!response.ok) {
+                            console.log('Error with Status Code: ' + response.status);
+                            return;
+                        }
+                        response.json().then(function(data) {	
+
+                            document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
+                            document.getElementById(path + '-' + method).style.display = '';
+
+
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log('Error: ' + err);
+                });
+
+                }  
+                
+                function sendPUT(path,method){
+
+                    token = document.getElementById("token").value;	
+
+                    var openapi = JSON.parse(document.getElementById('openapi').value);
+
+                    var apply_path = path;
+                    var parameters = openapi.paths[path][method].parameters;
+
+                    for (var i = 0; i < parameters.length; i++) {
+                        if(parameters[i].in == 'path'){
+                            var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                        }            
+                    }
+
+                    var body = document.getElementById(path + '-' + method + '-body').value;
+                    const options = {
+                        method: method,
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-api-key": token
+                        },
+                        body: body
+                    };	
+
+                    fetch(base_url + apply_path,options)
+                        .then(function(response) {
+                            if (!response.ok) {
+                                console.log('Error with Status Code: ' + response.status);
+                                return;
+                            }
+                            response.json().then(function(data) {	
+
+                                document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
+                                document.getElementById(path + '-' + method).style.display = '';
+
+
+                            });
+                        })
+                        .catch(function(err) {
+                            console.log('Error: ' + err);
+                    });
+
+                    }  
+                function sendDELETE(path,method){
+
+                    token = document.getElementById("token").value;	
+
+                    var openapi = JSON.parse(document.getElementById('openapi').value);
+
+                    var apply_path = path;
+                    var parameters = openapi.paths[path][method].parameters;
+
+                    for (var i = 0; i < parameters.length; i++) {
+                        if(parameters[i].in == 'path'){
+                            var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                        }            
+                    }
+
+                    const options = {
+                        method: method,
+                        headers: {
+                            "x-api-key": token
+                        }
+                    };	
+
+                    fetch(base_url + apply_path,options)
+                        .then(function(response) {
+                            if (!response.ok) {
+                                console.log('Error with Status Code: ' + response.status);
+                                return;
+                            }
+                            response.json().then(function(data) {	
+
+                                document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
+                                document.getElementById(path + '-' + method).style.display = '';
+
+                            });
+                        })
+                        .catch(function(err) {
+                            console.log('Error: ' + err);
+                    });
+
+                    }                                   
+    </script>     
+
     <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API."},"servers":[{"url":null}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"schema":{"type":"string"}},{"name":"tags","in":"query","required":false,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}/tags":{"get":{"summary":"Diagram Tags","description":"Returns all of the tags for a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Tags"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram Tag","description":"Adds a tag for a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"tag_id\" : \"$input.json('$.tag_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}/tags/{tag_id}":{"delete":{"summary":"Diagram Tag","description":"Deletes a diagram tag.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}},{"name":"tag_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.tag_id":"method.request.path.tag_id","integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"tag_id\" : \"$input.params('tag_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}},{"name":"tag_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'DELETE,OPTIONS'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"}},"Tag":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"description":{"type":"string"}}},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}}},"Tags":{"type":"array","items":{"$ref":"#/components/schemas/Tag"}}}}}</textarea>    
 
     <h1>Diagrams</h1>
@@ -132,9 +333,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams" style="font-size: 24px; font-weight: bold; width: 750px;">
-                    </div>                    
+                    <span style="font-size: 24px; font-weight: bold;">/diagrams</span>
                 </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -144,124 +343,93 @@
 
                         
 
-                        <h4><span style="color:#228B22;">GET</span> Diagrams</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="get">
-                        </div>
+                            <h4><span style="color:#228B22;">GET</span> Diagrams</h4>
+                            
+                                <p>Returns all of the diagrams.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagrams">
-                        </div>                        
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>limit (false)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-limit" value=""></td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td>page (false)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-page" value=""></td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td>search (false)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-search" value=""></td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td>tags (false)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-tags" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
 
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Returns all of the diagrams.">
-                        </div> 
-                        
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendGET('/diagrams','get');">Send</button></center>
+                            
 
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="limit"></td>
-                                        <td><input type="text" class="form-control" id="required" value="false"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="page"></td>
-                                        <td><input type="text" class="form-control" id="required" value="false"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="search"></td>
-                                        <td><input type="text" class="form-control" id="required" value="false"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="tags"></td>
-                                        <td><input type="text" class="form-control" id="required" value="false"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                            <textarea id="/diagrams-get" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
 
                           
-                                  
 
                     
 
                         
 
-                        <h4><span style="color:#FF5733;">POST</span> Diagram</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="post">
-                        </div>
+                            <h4><span style="color:#FF5733;">POST</span> Diagram</h4>
+                            
+                                <p>Adds a diagram.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram">
-                        </div>                        
+                            
 
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Adds a diagram.">
-                        </div> 
-                        
+                            
+                                <h5>Request Body:</h5>
+                                <div class="mb-3">
+                                    <textarea id="/diagrams-post-body" style="width: 100%; height: 200px;"></textarea>
+                                </div>                              
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendPOST('/diagrams','post');">Send</button></center>
+                            
 
-                        
+                            <textarea id="/diagrams-post" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
 
-                        
-                            <h5>Request Body:</h5>
-                            <div class="mb-3">
-                                <label for="response-status-code" class="form-label">Request Body:</label>
-                                <input type="email" class="form-control" id="response-status-code" placeholder="Diagram">
-                            </div>                              
+                            <br><hr><br>
+
                           
-                                  
 
                     
 
-                        
-
-                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
-
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="options">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="">
-                        </div>                        
-
-                        
-
-                        
-
                           
-                                  
 
                       
 
@@ -274,9 +442,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams/{diagram_id}" style="font-size: 24px; font-weight: bold; width: 750px;">
-                    </div>                    
+                    <span style="font-size: 24px; font-weight: bold;">/diagrams/{diagram_id}</span>
                 </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -286,194 +452,139 @@
 
                         
 
-                        <h4><span style="color:#228B22;">GET</span> Diagram</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="get">
-                        </div>
+                            <h4><span style="color:#228B22;">GET</span> Diagram</h4>
+                            
+                                <p>Return and individual diagrams.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Return and individual diagrams.">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
                                     </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>diagram_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}-get-parameters-diagram_id" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
+
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendGET('/diagrams/{diagram_id}','get');">Send</button></center>
+                            
+
+                            <textarea id="/diagrams/{diagram_id}-get" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
 
                           
-                                  
 
                     
 
                         
 
-                        <h4><span style="color:#FFC300;">PUT</span> Diagram</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="put">
-                        </div>
+                            <h4><span style="color:#FFC300;">PUT</span> Diagram</h4>
+                            
+                                <p>Updates a diagram.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Updates a diagram.">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
                                     </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>diagram_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}-put-parameters-diagram_id" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
 
-                        
-                            <h5>Request Body:</h5>
-                            <div class="mb-3">
-                                <label for="response-status-code" class="form-label">Request Body:</label>
-                                <input type="email" class="form-control" id="response-status-code" placeholder="Diagram">
-                            </div>                              
+                            
+                                <h5>Request Body:</h5>
+                                <div class="mb-3">
+                                    <textarea id="/diagrams/{diagram_id}-put-body" style="width: 100%; height: 200px;"></textarea>
+                                </div>                              
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendPUT('/diagrams/{diagram_id}','put');">Send</button></center>
+                            
+
+                            <textarea id="/diagrams/{diagram_id}-put" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
+
                           
-                                  
 
                     
 
                         
 
-                        <h4><span style="color:#C70039;">DELETE</span> Diagram</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="delete">
-                        </div>
+                            <h4><span style="color:#C70039;">DELETE</span> Diagram</h4>
+                            
+                                <p>Deltes a diagram.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Deltes a diagram.">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
                                     </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>diagram_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}-delete-parameters-diagram_id" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
+
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendDELETE('/diagrams/{diagram_id}','delete');">Send</button></center>                                                                                                            
+                            
+
+                            <textarea id="/diagrams/{diagram_id}-delete" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
 
                           
-                                  
 
                     
 
-                        
-
-                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
-
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="options">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="">
-                        </div>                        
-
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
-
                           
-                                  
 
                       
 
@@ -486,9 +597,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams/{diagram_id}/tags" style="font-size: 24px; font-weight: bold; width: 750px;">
-                    </div>                    
+                    <span style="font-size: 24px; font-weight: bold;">/diagrams/{diagram_id}/tags</span>
                 </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -498,146 +607,96 @@
 
                         
 
-                        <h4><span style="color:#228B22;">GET</span> Diagram Tags</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="get">
-                        </div>
+                            <h4><span style="color:#228B22;">GET</span> Diagram Tags</h4>
+                            
+                                <p>Returns all of the tags for a diagram.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram Tags">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Returns all of the tags for a diagram.">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
                                     </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>diagram_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-parameters-diagram_id" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
+
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendGET('/diagrams/{diagram_id}/tags','get');">Send</button></center>
+                            
+
+                            <textarea id="/diagrams/{diagram_id}/tags-get" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
 
                           
-                                  
 
                     
 
                         
 
-                        <h4><span style="color:#FF5733;">POST</span> Diagram Tag</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="post">
-                        </div>
+                            <h4><span style="color:#FF5733;">POST</span> Diagram Tag</h4>
+                            
+                                <p>Adds a tag for a diagram.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram Tag">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Adds a tag for a diagram.">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
                                     </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>diagram_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-parameters-diagram_id" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
 
-                        
-                            <h5>Request Body:</h5>
-                            <div class="mb-3">
-                                <label for="response-status-code" class="form-label">Request Body:</label>
-                                <input type="email" class="form-control" id="response-status-code" placeholder="Diagram">
-                            </div>                              
+                            
+                                <h5>Request Body:</h5>
+                                <div class="mb-3">
+                                    <textarea id="/diagrams/{diagram_id}/tags-post-body" style="width: 100%; height: 200px;"></textarea>
+                                </div>                              
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendPOST('/diagrams/{diagram_id}/tags','post');">Send</button></center>
+                            
+
+                            <textarea id="/diagrams/{diagram_id}/tags-post" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
+
                           
-                                  
 
                     
 
-                        
-
-                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
-
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="options">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="">
-                        </div>                        
-
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
-
                           
-                                  
 
                       
 
@@ -650,9 +709,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="/diagrams/{diagram_id}/tags/{tag_id}" style="font-size: 24px; font-weight: bold; width: 750px;">
-                    </div>                    
+                    <span style="font-size: 24px; font-weight: bold;">/diagrams/{diagram_id}/tags/{tag_id}</span>
                 </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -662,104 +719,53 @@
 
                         
 
-                        <h4><span style="color:#C70039;">DELETE</span> Diagram Tag</h4>
+                            
 
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="delete">
-                        </div>
+                            <h4><span style="color:#C70039;">DELETE</span> Diagram Tag</h4>
+                            
+                                <p>Deletes a diagram tag.</p>
+                            
 
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="Diagram Tag">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="Deletes a diagram tag.">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
+                            
+                                <h5>Parameters</h5>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
                                     </tr>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="tag_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr>
+                                            <td>diagram_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-parameters-diagram_id" value=""></td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td>tag_id (true)</td>
+                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-parameters-tag_id" value=""></td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            
+
+                              
+                                                                
+                            
+                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendDELETE('/diagrams/{diagram_id}/tags/{tag_id}','delete');">Send</button></center>                                                                                                            
+                            
+
+                            <textarea id="/diagrams/{diagram_id}/tags/{tag_id}-delete" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
+
+                            <br><hr><br>
 
                           
-                                  
 
                     
 
-                        
-
-                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
-
-                        <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="options">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="">
-                        </div>                        
-
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="diagram_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="name" value="tag_id"></td>
-                                        <td><input type="text" class="form-control" id="required" value="true"></td>
-                                        <td><input type="text" class="form-control" id="description" value=""></td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        
-
                           
-                                  
 
                       
 
