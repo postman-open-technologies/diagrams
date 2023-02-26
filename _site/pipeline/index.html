@@ -166,10 +166,10 @@ jobs:
     steps:
     
         - uses: actions/checkout@v1
-        - name: Use Node.js $
+        - name: Use Node.js $&#123;&#123; matrix.node-version &#125;&#125;
           uses: actions/setup-node@v1
           with:
-            node-version: $
+            node-version: $&#123;&#123; matrix.node-version &#125;&#125;
         - name: npm install and build
           run: |
             npm ci
