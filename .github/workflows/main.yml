@@ -1,13 +1,13 @@
 name: Diagrams  
 on: [push]
 jobs:
-    deploy_source:
-     name: Deploy API Using Lambda
-     strategy:
-        matrix:
-          node-version: [12.x]
-     runs-on: ubuntu-latest
-     steps:
+  deploy_source:
+    name: Deploy API Using Lambda
+    strategy:
+      matrix:
+        node-version: [12.x]
+    runs-on: ubuntu-latest
+    steps:
     
         - uses: actions/checkout@v1
         - name: Use Node.js ${{ matrix.node-version }}
@@ -50,39 +50,38 @@ jobs:
         - name: /diagrams/{diagram_id} get lambda deploy zip
           uses: postman-open-technologies/diagrams@main
           with:
-            args: zip -qq -r m-s-diagramsdiagram_id-g.zip diagramsdiagram_id/get/index.js node_modules
-        - name: diagramsdiagram_id get lambda deploy
+            args: zip -qq -r m-s-diagrams-diagram-g.zip diagrams-diagram/get/index.js node_modules
+        - name: diagrams-diagram get lambda deploy
           uses: appleboy/lambda-action@master
           with:
             aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
             aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws_region: us-west-1
-            function_name: m-s-diagramsdiagram_id-g
-            zip_file: m-s-diagramsdiagram_id-g.zip                        
+            function_name: m-s-diagrams-diagram-g
+            zip_file: m-s-diagrams-diagram-g.zip                        
                             
         - name: /diagrams/{diagram_id} put lambda deploy zip
           uses: postman-open-technologies/diagrams@main
           with:
-            args: zip -qq -r m-s-diagramsdiagram_id-pu.zip diagramsdiagram_id/put/index.js node_modules
-        - name: diagramsdiagram_id put lambda deploy
+            args: zip -qq -r m-s-diagrams-diagram-pu.zip diagrams-diagram/put/index.js node_modules
+        - name: diagrams-diagram put lambda deploy
           uses: appleboy/lambda-action@master
           with:
             aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
             aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws_region: us-west-1
-            function_name: m-s-diagramsdiagram_id-pu
-            zip_file: m-s-diagramsdiagram_id-pu.zip                        
+            function_name: m-s-diagrams-diagram-pu
+            zip_file: m-s-diagrams-diagram-pu.zip                        
                             
         - name: /diagrams/{diagram_id} delete lambda deploy zip
           uses: postman-open-technologies/diagrams@main
           with:
-            args: zip -qq -r m-s-diagramsdiagram_id-d.zip diagramsdiagram_id/delete/index.js node_modules
-        - name: diagramsdiagram_id delete lambda deploy
+            args: zip -qq -r m-s-diagrams-diagram-d.zip diagrams-diagram/delete/index.js node_modules
+        - name: diagrams-diagram delete lambda deploy
           uses: appleboy/lambda-action@master
           with:
             aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
             aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws_region: us-west-1
-            function_name: m-s-diagramsdiagram_id-d
-            zip_file: m-s-diagramsdiagram_id-d.zip                        
-        
+            function_name: m-s-diagrams-diagram-d
+            zip_file: m-s-diagrams-diagram-d.zip                        

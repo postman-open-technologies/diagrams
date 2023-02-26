@@ -95,7 +95,7 @@ jobs:
             npm run build --if-present
           env:
             CI: true
-        {% for path in api.paths %}{% for method in path[1] %}{% if method[0] != 'options' %}{% if method[0] == 'get' %}{% assign m = "g" %}{% elsif method[0] == 'post' %}{% assign m = "po" %}{% elsif method[0] == 'put' %}{% assign m = "pu" %}{% elsif method[0] == 'delete' %}{% assign m = "d" %}{% endif %}{% assign path_slug = path[0] | replace: '/','' | replace: '{','' | replace: '}','' %}                    
+        {% for path in api.paths %}{% for method in path[1] %}{% if method[0] != 'options' %}{% if method[0] == 'get' %}{% assign m = "g" %}{% elsif method[0] == 'post' %}{% assign m = "po" %}{% elsif method[0] == 'put' %}{% assign m = "pu" %}{% elsif method[0] == 'delete' %}{% assign m = "d" %}{% endif %}{% assign path_slug = path[0] | replace: '/','' | replace: '{','-' | replace: '}','' | replace: '_id','' %}                    
         - name: {{ path[0] }} {{ method[0] }} lambda deploy zip
           uses: postman-open-technologies/diagrams@main
           with:
