@@ -1,0 +1,155 @@
+---
+layout: default
+title: Editor
+---
+
+
+<div class="container">
+
+    {% assign api = site.data.api %}
+    {% assign openapi = site.data.api | jsonify %}
+
+    <div class="row">
+        <script>
+            function changeToken(t){
+                Cookies.set('token',t)
+            }
+            function changeGToken(t){
+                Cookies.set('gtoken',t)
+            }	
+            function viewOpenAPI(){
+            
+                if(document.getElementById('openapi').style.display == 'none'){
+                    document.getElementById('openapi').style.display = '';
+                }
+                else{
+                    document.getElementById('openapi').style.display = 'none';
+                }
+                
+            }			
+        </script>
+        <div class="col">				
+            <input type="text" width="100" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
+        </div>
+        <div class="col">				
+            <input type="text" width="100" class="form-control" id="gtoken" name="gtoken" value="" placeholder="Github Token" onchange="changeGToken();"><br>
+        </div>				
+        <div class="col">
+            <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
+        </div>	        					
+    </div>
+
+    <script>
+
+        const ajv = new window.ajv7();
+
+        var token = getUrlVar('token');	
+        if(token){
+            document.getElementById('token').value = token;		
+            changeToken(token);
+        }
+
+        var gtoken = getUrlVar('gtoken');	
+        if(gtoken){
+            document.getElementById('gtoken').value = gtoken;		
+            changeGToken(gtoken);
+        }							
+
+        var stored_token = Cookies.get('token');
+        if(stored_token){
+            document.getElementById('token').value = stored_token;	
+        }
+
+        var stored_gtoken = Cookies.get('gtoken');
+        if(stored_gtoken){
+            document.getElementById('gtoken').value = stored_gtoken;	
+        }	
+                              
+    </script>     
+
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{{ openapi }}</textarea>    
+
+    <h1>Pipeline</h1>
+    <p>This is GitHub actions pipeline generated from the underlying YAML OpenAPI contract.</p>     
+
+<textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px;">      
+name: Diagrams  
+on: [push]
+jobs:
+    deploy_source:
+    name: Deploy API Using Lambda
+    strategy:
+        matrix:
+        node-version: [12.x]
+    runs-on: ubuntu-latest
+    steps:
+    
+        - uses: actions/checkout@v1
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v1
+          with:
+            node-version: ${{ matrix.node-version }}
+        - name: npm install and build
+          run: |
+            npm ci
+            npm run build --if-present
+          env:
+            CI: true
+        {% for path in api.paths %}{% for method in path[1] %}{% if method[0] != 'options' %}{% if method[0] == 'get' %}{% assign m = "g" %}{% elsif method[0] == 'post' %}{% assign m = "po" %}{% elsif method[0] == 'put' %}{% assign m = "pu" %}{% elsif method[0] == 'delete' %}{% assign m = "d" %}{% endif %}{% assign path_slug = path[0] | replace: '/','' | replace: '{','' | replace: '}','' %}                    
+        - name: {{ path[0] }} {{ method[0] }} lambda deploy zip
+          uses: postman-open-technologies/diagrams@main
+          with:
+            args: zip -qq -r m-s-{{ path_slug }}-{{ m }}.zip {{ path_slug }}/{{ method[0] }}/index.js node_modules
+        - name: {{ path_slug }} {{ method[0] }} lambda deploy
+          uses: appleboy/lambda-action@master
+          with:
+            aws_access_key_id: $&#123;&#123;secrets.AWS_ACCESS_KEY_ID&#125;&#125;
+            aws_secret_access_key: $&#123;&#123;secrets.AWS_SECRET_ACCESS_KEY&#125;&#125;
+            aws_region: us-west-1
+            function_name: m-s-{{ path_slug }}-{{ m }}
+            zip_file: m-s-{{ path_slug }}-{{ m }}.zip                        
+        {% endif %}{% endfor %}{% endfor %}  
+</textarea> 
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Operation</th>
+            <th scope="col">Results</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for path in api.paths %}                    
+            {% for method in path[1] %}
+
+                {% if method[0] != 'options' %}
+                    {% if method[0] != 'delete' %}
+
+                    {% if method[0] == 'get' %}
+                        {% assign method_color = "#228B22" %}
+                    {% elsif method[0] == 'post' %}
+                        {% assign method_color = "#FF5733" %}
+                    {% elsif method[0] == 'put' %}
+                        {% assign method_color = "#FFC300" %} 
+                    {% elsif method[0] == 'delete' %}
+                        {% assign method_color = "#C70039" %}                                                                                     
+                    {% elsif method[0] == 'options' %}
+                        {% assign method_color = "#0006FF" %}                             
+                    {% endif %}
+
+                    <tr>
+                        <td><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</td>
+                        <td id="{{ path[0] }}-{{ method[0] }}-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                    {% endif %} 
+                {% endif %}  
+
+            {% endfor %}  
+        {% endfor %}
+        </tbody>
+    </table>        
+
+    </div>
+
+</div>

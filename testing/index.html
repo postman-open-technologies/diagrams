@@ -7,7 +7,6 @@ title: Editor
 <div class="container">
 
     {% assign api = site.data.api %}
-    {% assign openapi = site.data.api | jsonify %}
 
     <div class="row">
         <script>
@@ -41,6 +40,9 @@ title: Editor
             <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
         </div>	        					
     </div>
+
+    <h1>Contract Testing</h1>
+    <p>This is HTML contract testing generated from the underlying YAML OpenAPI contract.</p>   
 
     <script>
 

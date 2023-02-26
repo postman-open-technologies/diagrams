@@ -7,10 +7,10 @@ title: Documentation
 <div class="container">
 
     {% assign api = site.data.api %}
+    {% assign openapi = site.data.api | jsonify %}
 
-    <h1>{{ api.info.title }}</h1>
-    <p>{{ api.info.description }}</p>   
-
+    <h1>Documentation</h1>
+    <p>This is HTML documentation generated from the underlying YAML OpenAPI contract.</p>   
 
     <h1>Paths</h1>
     <div class="accordion" id="accordionExample">

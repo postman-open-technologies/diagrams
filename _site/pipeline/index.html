@@ -1,0 +1,350 @@
+
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="">
+   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+   <meta name="generator" content="Hugo 0.88.1">
+  
+   <title>Editor</title>
+   <link href="http://localhost:4000/assets/css/bootstrap.min.css" rel="stylesheet">
+   <meta name="theme-color" content="#7952b3">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Cookies.js - http://github.com/ScottHamper/Cookies -->
+    <script src="http://localhost:4000/assets/js/cookies.js"></script>
+    <script src="http://localhost:4000/assets/js/js-yaml.min.js"></script>
+    <script src="http://localhost:4000/assets/js/ajv7.min.js"></script>
+
+    <script>
+
+        function getUrlVar(key){
+            var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
+            return result && unescape(result[1]) || "";
+        }
+
+    </script>
+
+  </head>
+  <body class="d-flex flex-column h-100">
+    
+<header>
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="http://localhost:4000/">Diagrams</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/docs/">Docs</a>
+          </li>           
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/editor/">Editor</a>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/client/">Client</a>
+          </li>  
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/testing/">Contract Testing</a>
+          </li>  
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/pipeline/">Pipeline</a>
+          </li>                                                                                                         
+        </ul>
+        <form class="d-flex">
+          <!--<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>-->
+        </form>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="flex-shrink-0" style="margin-top: 60px;"><div class="container">
+
+    
+    
+
+    <div class="row">
+        <script>
+            function changeToken(t){
+                Cookies.set('token',t)
+            }
+            function changeGToken(t){
+                Cookies.set('gtoken',t)
+            }	
+            function viewOpenAPI(){
+            
+                if(document.getElementById('openapi').style.display == 'none'){
+                    document.getElementById('openapi').style.display = '';
+                }
+                else{
+                    document.getElementById('openapi').style.display = 'none';
+                }
+                
+            }			
+        </script>
+        <div class="col">				
+            <input type="text" width="100" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
+        </div>
+        <div class="col">				
+            <input type="text" width="100" class="form-control" id="gtoken" name="gtoken" value="" placeholder="Github Token" onchange="changeGToken();"><br>
+        </div>				
+        <div class="col">
+            <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
+        </div>	        					
+    </div>
+
+    <script>
+
+        const ajv = new window.ajv7();
+
+        var token = getUrlVar('token');	
+        if(token){
+            document.getElementById('token').value = token;		
+            changeToken(token);
+        }
+
+        var gtoken = getUrlVar('gtoken');	
+        if(gtoken){
+            document.getElementById('gtoken').value = gtoken;		
+            changeGToken(gtoken);
+        }							
+
+        var stored_token = Cookies.get('token');
+        if(stored_token){
+            document.getElementById('token').value = stored_token;	
+        }
+
+        var stored_gtoken = Cookies.get('gtoken');
+        if(stored_gtoken){
+            document.getElementById('gtoken').value = stored_gtoken;	
+        }	
+                              
+    </script>     
+
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}}}}</textarea>    
+
+    <h1>Pipeline</h1>
+    <p>This is GitHub actions pipeline generated from the underlying YAML OpenAPI contract.</p>     
+
+<textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px;">      
+name: Diagrams  
+on: [push]
+jobs:
+    deploy_source:
+    name: Deploy API Using Lambda
+    strategy:
+        matrix:
+        node-version: [12.x]
+    runs-on: ubuntu-latest
+    steps:
+    
+        - uses: actions/checkout@v1
+        - name: Use Node.js $
+          uses: actions/setup-node@v1
+          with:
+            node-version: $
+        - name: npm install and build
+          run: |
+            npm ci
+            npm run build --if-present
+          env:
+            CI: true
+                            
+        - name: /diagrams get lambda deploy zip
+          uses: postman-open-technologies/diagrams@main
+          with:
+            args: zip -qq -r m-s-diagrams-g.zip diagrams/get/index.js node_modules
+        - name: diagrams get lambda deploy
+          uses: appleboy/lambda-action@master
+          with:
+            aws_access_key_id: $&#123;&#123;secrets.AWS_ACCESS_KEY_ID&#125;&#125;
+            aws_secret_access_key: $&#123;&#123;secrets.AWS_SECRET_ACCESS_KEY&#125;&#125;
+            aws_region: us-west-1
+            function_name: m-s-diagrams-g
+            zip_file: m-s-diagrams-g.zip                        
+                            
+        - name: /diagrams post lambda deploy zip
+          uses: postman-open-technologies/diagrams@main
+          with:
+            args: zip -qq -r m-s-diagrams-po.zip diagrams/post/index.js node_modules
+        - name: diagrams post lambda deploy
+          uses: appleboy/lambda-action@master
+          with:
+            aws_access_key_id: $&#123;&#123;secrets.AWS_ACCESS_KEY_ID&#125;&#125;
+            aws_secret_access_key: $&#123;&#123;secrets.AWS_SECRET_ACCESS_KEY&#125;&#125;
+            aws_region: us-west-1
+            function_name: m-s-diagrams-po
+            zip_file: m-s-diagrams-po.zip                        
+                            
+        - name: /diagrams/{diagram_id} get lambda deploy zip
+          uses: postman-open-technologies/diagrams@main
+          with:
+            args: zip -qq -r m-s-diagramsdiagram_id-g.zip diagramsdiagram_id/get/index.js node_modules
+        - name: diagramsdiagram_id get lambda deploy
+          uses: appleboy/lambda-action@master
+          with:
+            aws_access_key_id: $&#123;&#123;secrets.AWS_ACCESS_KEY_ID&#125;&#125;
+            aws_secret_access_key: $&#123;&#123;secrets.AWS_SECRET_ACCESS_KEY&#125;&#125;
+            aws_region: us-west-1
+            function_name: m-s-diagramsdiagram_id-g
+            zip_file: m-s-diagramsdiagram_id-g.zip                        
+                            
+        - name: /diagrams/{diagram_id} put lambda deploy zip
+          uses: postman-open-technologies/diagrams@main
+          with:
+            args: zip -qq -r m-s-diagramsdiagram_id-pu.zip diagramsdiagram_id/put/index.js node_modules
+        - name: diagramsdiagram_id put lambda deploy
+          uses: appleboy/lambda-action@master
+          with:
+            aws_access_key_id: $&#123;&#123;secrets.AWS_ACCESS_KEY_ID&#125;&#125;
+            aws_secret_access_key: $&#123;&#123;secrets.AWS_SECRET_ACCESS_KEY&#125;&#125;
+            aws_region: us-west-1
+            function_name: m-s-diagramsdiagram_id-pu
+            zip_file: m-s-diagramsdiagram_id-pu.zip                        
+                            
+        - name: /diagrams/{diagram_id} delete lambda deploy zip
+          uses: postman-open-technologies/diagrams@main
+          with:
+            args: zip -qq -r m-s-diagramsdiagram_id-d.zip diagramsdiagram_id/delete/index.js node_modules
+        - name: diagramsdiagram_id delete lambda deploy
+          uses: appleboy/lambda-action@master
+          with:
+            aws_access_key_id: $&#123;&#123;secrets.AWS_ACCESS_KEY_ID&#125;&#125;
+            aws_secret_access_key: $&#123;&#123;secrets.AWS_SECRET_ACCESS_KEY&#125;&#125;
+            aws_region: us-west-1
+            function_name: m-s-diagramsdiagram_id-d
+            zip_file: m-s-diagramsdiagram_id-d.zip                        
+          
+</textarea> 
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Operation</th>
+            <th scope="col">Results</th>
+        </tr>
+        </thead>
+        <tbody>
+                            
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#228B22;">GET</span> Diagrams</td>
+                        <td id="/diagrams-get-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#FF5733;">POST</span> Diagram</td>
+                        <td id="/diagrams-post-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                  
+
+              
+                            
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#228B22;">GET</span> Diagram</td>
+                        <td id="/diagrams/{diagram_id}-get-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#FFC300;">PUT</span> Diagram</td>
+                        <td id="/diagrams/{diagram_id}-put-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                     
+                  
+
+            
+
+                  
+
+              
+        
+        </tbody>
+    </table>        
+
+    </div>
+
+</div></main>
+
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <span class="text-muted">Footer</span>
+  </div>
+</footer>
+
+<script src="http://localhost:4000/assets/js/bootstrap.js"></script>    
+
+  </body>
+</html>
