@@ -33,6 +33,7 @@
     <!-- Cookies.js - http://github.com/ScottHamper/Cookies -->
     <script src="http://localhost:4000/assets/js/cookies.js"></script>
     <script src="http://localhost:4000/assets/js/js-yaml.min.js"></script>
+    <script src="http://localhost:4000/assets/js/ajv7.min.js"></script>
 
     <script>
 
@@ -69,7 +70,7 @@
             <a class="nav-link active" aria-current="page" href="http://localhost:4000/client/">Client</a>
           </li>  
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/testing/">Testing</a>
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/testing/">Contract Testing</a>
           </li>                                                                                               
         </ul>
         <form class="d-flex">
@@ -112,7 +113,7 @@
             <input type="text" width="100" class="form-control" id="gtoken" name="gtoken" value="" placeholder="Github Token" onchange="changeGToken();"><br>
         </div>			
         <div class="col">
-            <input type="button" class="btn btn-success" name="show" value="Publish" onclick="publishREADMEToGithub();">
+            <input type="button" class="btn btn-success" name="show" value="Test All" onclick="testAll();">
         </div>	
         <div class="col">
             <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
@@ -120,6 +121,9 @@
     </div>
 
     <script>
+
+        const ajv = new window.ajv7();
+
         var token = getUrlVar('token');	
         if(token){
             document.getElementById('token').value = token;		
@@ -153,12 +157,32 @@
             var apply_path = path;
             var parameters = openapi.paths[path][method].parameters;
 
-            for (var i = 0; i < parameters.length; i++) {
-                if(parameters[i].in == 'path'){
-                    var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
-                    apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                }            
+            if(openapi.paths[path][method].parameters){
+                    var parameters = openapi.paths[path][method].parameters;
+
+                    for (var i = 0; i < parameters.length; i++) {
+                        if(parameters[i].in == 'path'){
+                            var param_value = parameters[i].example;
+                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                        }            
+                    }
+                }
+
+            // Get Schema
+            var schema_name = openapi.paths[path][method].responses['200'].content['application/json'].schema['$ref'];    
+            schema_name = schema_name.replace('#/components/schemas/','');
+            var schema = openapi.components.schemas[schema_name];
+
+            // If array then get schema
+            if(schema.items){
+                var schema_object_name = schema.items['$ref'];
+                schema_object_name = schema_object_name.replace('#/components/schemas/','');
+                var schema_items = openapi.components.schemas[schema_object_name];
+                delete schema_items.example;
+                schema.items = schema_items;
             }
+
+            console.log(schema);
 
             const options = {
                 method: method,
@@ -174,10 +198,21 @@
                         return;
                     }
                     response.json().then(function(data) {	
+                        
+                        delete schema.example;
+                        //schema['$id'] = "http://example.com/data";
+                        //console.log("data: " + data);
+                        let validate = ajv.compile(schema)
+                        let valid = validate(data);
+                        console.log("valid: " + valid);
 
-                        document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
-                        document.getElementById(path + '-' + method).style.display = '';
-
+                        var results = '<img src="/images/icons/red-icon.png" width="50">';
+                        if(valid){
+                            results = '<img src="/images/icons/green-icon.png" width="50">';
+                        }
+                        //document.getElementById(path + '-' + method + '-results').innerHTML = JSON.stringify(data, null, 2) + '<br><br>' + JSON.stringify(schema, null, 2) + '<br><br>' + valid;
+                        document.getElementById(path + '-' + method + '-results').innerHTML = results;
+                        
                     });
                 })
                 .catch(function(err) {
@@ -193,23 +228,45 @@
                 var openapi = JSON.parse(document.getElementById('openapi').value);
 
                 var apply_path = path;
-                var parameters = openapi.paths[path][method].parameters;
+                if(openapi.paths[path][method].parameters){
+                    var parameters = openapi.paths[path][method].parameters;
 
-                for (var i = 0; i < parameters.length; i++) {
-                    if(parameters[i].in == 'path'){
-                        var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
-                        apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                    }            
+                    for (var i = 0; i < parameters.length; i++) {
+                        if(parameters[i].in == 'path'){
+                            var param_value = parameters[i].example;
+                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                        }            
+                    }
                 }
 
-                var body = document.getElementById(path + '-' + method + '-body').value;
+                var body_schema = openapi.paths[path][method].requestBody['$ref'];
+                body_schema = body_schema.replace('#/components/requestBodies/','');
+                var body = openapi.components.requestBodies[body_schema].content['application/json'].example;
+                //console.log(body);
+
+                // Get Schema
+                var schema_name = openapi.paths[path][method].responses['201'].content['application/json'].schema['$ref'];    
+                schema_name = schema_name.replace('#/components/schemas/','');
+                var schema = openapi.components.schemas[schema_name];
+
+                // If array then get schema
+                if(schema.items){
+                    var schema_object_name = schema.items['$ref'];
+                    schema_object_name = schema_object_name.replace('#/components/schemas/','');
+                    var schema_items = openapi.components.schemas[schema_object_name];
+                    delete schema_items.example;
+                    schema.items = schema_items;
+                }
+
+                console.log(schema);
+
                 const options = {
                     method: method,
                     headers: {
                         "Content-Type": "application/json",
                         "x-api-key": token
                     },
-                    body: body
+                    body: JSON.stringify(body)
                 };	
 
                 fetch(base_url + apply_path,options)
@@ -218,11 +275,20 @@
                             console.log('Error with Status Code: ' + response.status);
                             return;
                         }
-                        response.json().then(function(data) {	
+                        response.json().then(function(data) {
+                            
+                            delete schema.example;
+                            //console.log("data: " + data);
+                            let validate = ajv.compile(schema)
+                            let valid = validate(data);
+                            console.log("valid: " + valid);                            
 
-                            document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
-                            document.getElementById(path + '-' + method).style.display = '';
-
+                            var results = '<img src="/images/icons/red-icon.png" width="50">';
+                            if(valid){
+                                results = '<img src="/images/icons/green-icon.png" width="50">';
+                            }
+                            //document.getElementById(path + '-' + method + '-results').innerHTML = JSON.stringify(data, null, 2) + '<br><br>' + JSON.stringify(schema, null, 2) + '<br><br>' + valid;
+                            document.getElementById(path + '-' + method + '-results').innerHTML = results;
 
                         });
                     })
@@ -232,543 +298,240 @@
 
                 }  
                 
-                function sendPUT(path,method){
+            function sendPUT(path,method){
 
-                    token = document.getElementById("token").value;	
+                token = document.getElementById("token").value;	
 
-                    var openapi = JSON.parse(document.getElementById('openapi').value);
+                var openapi = JSON.parse(document.getElementById('openapi').value);
 
-                    var apply_path = path;
+                var apply_path = path;
+                var parameters = openapi.paths[path][method].parameters;
+
+                if(openapi.paths[path][method].parameters){
                     var parameters = openapi.paths[path][method].parameters;
 
                     for (var i = 0; i < parameters.length; i++) {
                         if(parameters[i].in == 'path'){
-                            var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                            var param_value = parameters[i].example;
                             apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
                         }            
                     }
+                }
 
-                    var body = document.getElementById(path + '-' + method + '-body').value;
-                    const options = {
-                        method: method,
-                        headers: {
-                            "Content-Type": "application/json",
-                            "x-api-key": token
-                        },
-                        body: body
-                    };	
+                var body_schema = openapi.paths[path][method].requestBody['$ref'];
+                body_schema = body_schema.replace('#/components/requestBodies/','');
+                if(openapi.components.requestBodies[body_schema].content){
+                    var body = openapi.components.requestBodies[body_schema].content['application/json'].example;
+                }
+                else{
+                    var body = {};
+                }
+                console.log(body);
 
-                    fetch(base_url + apply_path,options)
-                        .then(function(response) {
-                            if (!response.ok) {
-                                console.log('Error with Status Code: ' + response.status);
-                                return;
-                            }
-                            response.json().then(function(data) {	
+                // Get Schema
+                if(openapi.paths[path][method].responses['204'].content){
+                    var schema_name = openapi.paths[path][method].responses['204'].content['application/json'].schema['$ref'];    
+                    schema_name = schema_name.replace('#/components/schemas/','');
+                    var schema = openapi.components.schemas[schema_name];
+                }
+                else{
+                    var schema = {};
+                }                
 
-                                document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
-                                document.getElementById(path + '-' + method).style.display = '';
+                // If array then get schema
+                if(schema.items){
+                    var schema_object_name = schema.items['$ref'];
+                    schema_object_name = schema_object_name.replace('#/components/schemas/','');
+                    var schema_items = openapi.components.schemas[schema_object_name];
+                    delete schema_items.example;
+                    schema.items = schema_items;
+                }
 
+                console.log(schema);                
 
-                            });
-                        })
-                        .catch(function(err) {
-                            console.log('Error: ' + err);
-                    });
+                const options = {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": token
+                    },
+                    body: JSON.stringify(body)
+                };		
 
-                    }  
-                function sendDELETE(path,method){
-
-                    token = document.getElementById("token").value;	
-
-                    var openapi = JSON.parse(document.getElementById('openapi').value);
-
-                    var apply_path = path;
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-
-                    const options = {
-                        method: method,
-                        headers: {
-                            "x-api-key": token
+                fetch(base_url + apply_path,options)
+                    .then(function(response) {
+                        if (!response.ok) {
+                            console.log('Error with Status Code: ' + response.status);
+                            return;
                         }
-                    };	
+                        response.text().then(function(data) {	
 
-                    fetch(base_url + apply_path,options)
-                        .then(function(response) {
-                            if (!response.ok) {
-                                console.log('Error with Status Code: ' + response.status);
-                                return;
-                            }
-                            response.json().then(function(data) {	
+                            var results = '<img src="/images/icons/green-icon.png" width="50">';
+                            document.getElementById(path + '-' + method + '-results').innerHTML = results;
 
-                                document.getElementById(path + '-' + method).value = JSON.stringify(data, null, 2);
-                                document.getElementById(path + '-' + method).style.display = '';
+                        });                        
+                    })
+                    .catch(function(err) {
+                        console.log('Error: ' + err);
+                });
 
-                            });
-                        })
-                        .catch(function(err) {
-                            console.log('Error: ' + err);
-                    });
-
-                    }                                   
+                }                                     
     </script>     
 
-    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}/tags":{"get":{"summary":"Diagram Tags","description":"Returns all of the tags for a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Tags"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram Tag","description":"Adds a tag for a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"tag_id\" : \"$input.json('$.tag_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}/tags/{tag_id}":{"delete":{"summary":"Diagram Tag","description":"Deletes a diagram tag.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}},{"name":"tag_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.tag_id":"method.request.path.tag_id","integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"tag_id\" : \"$input.params('tag_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}},{"name":"tag_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'DELETE,OPTIONS'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Tag":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"description":{"type":"string"}},"example":{"id":857,"name":"Example Tag","description":"The description."}},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}},"Tags":{"type":"array","items":{"$ref":"#/components/schemas/Tag"},"example":[{"id":1,"name":"Example Image","description":"The description."}]}}}}</textarea>    
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}}}}</textarea>    
 
     <h1>Diagrams</h1>
     <p>This is of the diagrams API.</p>   
 
-    <h1>Paths</h1>
-    <div class="accordion" id="accordionExample">
+    <script>        
 
+        function testAll(){
+                            
+            
+                
+                    
+                    
+                        sendGET('/diagrams','get');
+                                              
+
+                  
+
+            
+                
+                    
+                    
+                        sendPOST('/diagrams','post');
+                                              
+
+                  
+
+            
+                  
+
+              
+                            
+            
+                
+                    
+                    
+                        sendGET('/diagrams/{diagram_id}','get');
+                                              
+
+                  
+
+            
+                
+                    
+                    
+                        sendPUT('/diagrams/{diagram_id}','put');                                                                                             
+                                              
+
+                  
+
+            
+                
+                    
+                                              
+
+                  
+
+            
+                  
+
+              
+          
+        } 
+    </script> 
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Operation</th>
+            <th scope="col">Results</th>
+        </tr>
+        </thead>
+        <tbody>
+                            
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#228B22;">GET</span> Diagrams</td>
+                        <td id="/diagrams-get-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#FF5733;">POST</span> Diagram</td>
+                        <td id="/diagrams-post-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                  
+
+              
+                            
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#228B22;">GET</span> Diagram</td>
+                        <td id="/diagrams/{diagram_id}-get-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#FFC300;">PUT</span> Diagram</td>
+                        <td id="/diagrams/{diagram_id}-put-results" width="10%">RESULTS</td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                     
+                  
+
+            
+
+                  
+
+              
         
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <span style="font-size: 24px; font-weight: bold;">/diagrams</span>
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#228B22;">GET</span> Diagrams</h4>
-                            
-                                <p>Returns all of the diagrams.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>limit (false)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-limit" value=""></td>
-                                        </tr>
-                                      
-                                        <tr>
-                                            <td>page (false)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-page" value=""></td>
-                                        </tr>
-                                      
-                                        <tr>
-                                            <td>search (false)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams-get-parameters-search" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendGET('/diagrams','get');">Send</button></center>
-                            
-
-                            <textarea id="/diagrams-get" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#FF5733;">POST</span> Diagram</h4>
-                            
-                                <p>Adds a diagram.</p>
-                            
-
-                            
-
-                            
-                                <h5>Request Body:</h5>
-                                <div class="mb-3">
-                                    <textarea id="/diagrams-post-body" style="width: 100%; height: 200px;"></textarea>
-                                </div>                              
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendPOST('/diagrams','post');">Send</button></center>
-                            
-
-                            <textarea id="/diagrams-post" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                          
-
-                      
-
-                    </div>
-                </div>
-            </div>              
-
-        
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <span style="font-size: 24px; font-weight: bold;">/diagrams/{diagram_id}</span>
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#228B22;">GET</span> Diagram</h4>
-                            
-                                <p>Return and individual diagrams.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>diagram_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}-get-parameters-diagram_id" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendGET('/diagrams/{diagram_id}','get');">Send</button></center>
-                            
-
-                            <textarea id="/diagrams/{diagram_id}-get" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#FFC300;">PUT</span> Diagram</h4>
-                            
-                                <p>Updates a diagram.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>diagram_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}-put-parameters-diagram_id" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                            
-                                <h5>Request Body:</h5>
-                                <div class="mb-3">
-                                    <textarea id="/diagrams/{diagram_id}-put-body" style="width: 100%; height: 200px;"></textarea>
-                                </div>                              
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendPUT('/diagrams/{diagram_id}','put');">Send</button></center>
-                            
-
-                            <textarea id="/diagrams/{diagram_id}-put" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#C70039;">DELETE</span> Diagram</h4>
-                            
-                                <p>Deltes a diagram.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>diagram_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}-delete-parameters-diagram_id" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendDELETE('/diagrams/{diagram_id}','delete');">Send</button></center>                                                                                                            
-                            
-
-                            <textarea id="/diagrams/{diagram_id}-delete" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                          
-
-                      
-
-                    </div>
-                </div>
-            </div>              
-
-        
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <span style="font-size: 24px; font-weight: bold;">/diagrams/{diagram_id}/tags</span>
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#228B22;">GET</span> Diagram Tags</h4>
-                            
-                                <p>Returns all of the tags for a diagram.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>diagram_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-parameters-diagram_id" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendGET('/diagrams/{diagram_id}/tags','get');">Send</button></center>
-                            
-
-                            <textarea id="/diagrams/{diagram_id}/tags-get" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#FF5733;">POST</span> Diagram Tag</h4>
-                            
-                                <p>Adds a tag for a diagram.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>diagram_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-parameters-diagram_id" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                            
-                                <h5>Request Body:</h5>
-                                <div class="mb-3">
-                                    <textarea id="/diagrams/{diagram_id}/tags-post-body" style="width: 100%; height: 200px;"></textarea>
-                                </div>                              
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendPOST('/diagrams/{diagram_id}/tags','post');">Send</button></center>
-                            
-
-                            <textarea id="/diagrams/{diagram_id}/tags-post" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                          
-
-                      
-
-                    </div>
-                </div>
-            </div>              
-
-        
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <span style="font-size: 24px; font-weight: bold;">/diagrams/{diagram_id}/tags/{tag_id}</span>
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    
-                    
-
-                        
-
-                            
-
-                            <h4><span style="color:#C70039;">DELETE</span> Diagram Tag</h4>
-                            
-                                <p>Deletes a diagram tag.</p>
-                            
-
-                            
-                                <h5>Parameters</h5>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                        <tr>
-                                            <td>diagram_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-parameters-diagram_id" value=""></td>
-                                        </tr>
-                                      
-                                        <tr>
-                                            <td>tag_id (true)</td>
-                                            <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-parameters-tag_id" value=""></td>
-                                        </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            
-
-                              
-                                                                
-                            
-                                <center><button type="button" class="btn btn-primary btn-lg" onclick="sendDELETE('/diagrams/{diagram_id}/tags/{tag_id}','delete');">Send</button></center>                                                                                                            
-                            
-
-                            <textarea id="/diagrams/{diagram_id}/tags/{tag_id}-delete" style="width: 100%; height: 500px; display: none; border: 2px solid #000; padding: 5px; margin: 5px;"></textarea>
-
-                            <br><hr><br>
-
-                          
-
-                    
-
-                          
-
-                      
-
-                    </div>
-                </div>
-            </div>              
-
-        
+        </tbody>
+    </table>        
 
     </div>
 

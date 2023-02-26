@@ -33,6 +33,7 @@
     <!-- Cookies.js - http://github.com/ScottHamper/Cookies -->
     <script src="http://localhost:4000/assets/js/cookies.js"></script>
     <script src="http://localhost:4000/assets/js/js-yaml.min.js"></script>
+    <script src="http://localhost:4000/assets/js/ajv7.min.js"></script>
 
     <script>
 
@@ -69,7 +70,7 @@
             <a class="nav-link active" aria-current="page" href="http://localhost:4000/client/">Client</a>
           </li>  
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/testing/">Testing</a>
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/testing/">Contract Testing</a>
           </li>                                                                                               
         </ul>
         <form class="d-flex">
@@ -141,7 +142,7 @@
         }			
     </script>     
     
-    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}/tags":{"get":{"summary":"Diagram Tags","description":"Returns all of the tags for a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Tags"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram Tag","description":"Adds a tag for a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"tag_id\" : \"$input.json('$.tag_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}/tags/{tag_id}":{"delete":{"summary":"Diagram Tag","description":"Deletes a diagram tag.","parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}},{"name":"tag_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.tag_id":"method.request.path.tag_id","integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"tag_id\" : \"$input.params('tag_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}},{"name":"tag_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'DELETE,OPTIONS'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Tag":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"description":{"type":"string"}},"example":{"id":857,"name":"Example Tag","description":"The description."}},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}},"Tags":{"type":"array","items":{"$ref":"#/components/schemas/Tag"},"example":[{"id":1,"name":"Example Image","description":"The description."}]}}}}</textarea>           
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}}}}</textarea>           
 
     <h1>Diagrams</h1>
     <p>This is of the diagrams API.</p>   
@@ -572,11 +573,7 @@
                                                             
                                                                 <option value="Diagrams" selected>Diagrams</option>"
                                                             
-                                                                <option value="Tag">Tag</option>"
-                                                            
                                                                 <option value="Diagram">Diagram</option>"
-                                                            
-                                                                <option value="Tags">Tags</option>"
                                                               
                                                         </select>                                                        
                                                     </td>
@@ -624,11 +621,7 @@
                                     
                                         <option value="Diagrams">Diagrams</option>"
                                     
-                                        <option value="Tag">Tag</option>"
-                                    
                                         <option value="Diagram" selected>Diagram</option>"
-                                    
-                                        <option value="Tags">Tags</option>"
                                       
                                 </select>
                             </div>                              
@@ -691,11 +684,7 @@
                                                             
                                                                 <option value="Diagrams">Diagrams</option>"
                                                             
-                                                                <option value="Tag">Tag</option>"
-                                                            
                                                                 <option value="Diagram" selected>Diagram</option>"
-                                                            
-                                                                <option value="Tags">Tags</option>"
                                                               
                                                         </select>                                                        
                                                     </td>
@@ -912,11 +901,7 @@
                                                             
                                                                 <option value="Diagrams">Diagrams</option>"
                                                             
-                                                                <option value="Tag">Tag</option>"
-                                                            
                                                                 <option value="Diagram" selected>Diagram</option>"
-                                                            
-                                                                <option value="Tags">Tags</option>"
                                                               
                                                         </select>                                                        
                                                     </td>
@@ -988,11 +973,7 @@
                                     
                                         <option value="Diagrams">Diagrams</option>"
                                     
-                                        <option value="Tag">Tag</option>"
-                                    
                                         <option value="Diagram" selected>Diagram</option>"
-                                    
-                                        <option value="Tags">Tags</option>"
                                       
                                 </select>
                             </div>                              
@@ -1239,624 +1220,6 @@
 
         
 
-            
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags" value="/diagrams/{diagram_id}/tags" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updatePath('/diagrams/{diagram_id}/tags')">
-                    </div>                    
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    
-                    
-
-                        
-
-                        <h4><span style="color:#228B22;">GET</span> Diagram Tags</h4>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-get" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get" value="get" onchange="updateMethod('/diagrams/{diagram_id}/tags','get','/diagrams/{diagram_id}/tags-get')">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-get-summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-summary" value="Diagram Tags" onchange="updateOperationSummary('/diagrams/{diagram_id}/tags','get','/diagrams/{diagram_id}/tags-get-summary')">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-get-description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-description" value="Returns all of the tags for a diagram." onchange="updateOperationDescription('/diagrams/{diagram_id}/tags','get','/diagrams/{diagram_id}/tags-get-description')">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                                                    
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-0-name" value="diagram_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags','get','0','/diagrams/{diagram_id}/tags-get-0-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-0-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags','get','0','/diagrams/{diagram_id}/tags-get-0-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-0-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags','get','0','/diagrams/{diagram_id}/tags-get-0-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-0-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags','get','0','/diagrams/{diagram_id}/tags-get-0-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-0-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags','get','0','/diagrams/{diagram_id}/tags-get-0-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                </tbody>
-                            </table>
-                        
-
-                          
-                        
-                        
-                            <h5>Responses:</h5>
-                            
-
-                                    <div class="mb-3">
-                                        <label for="/diagrams/{diagram_id}/tags-get-200" class="form-label">Status Code:</label>
-                                        <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags-get-200" value="200" onchange="updateOperationResponse('/diagrams/{diagram_id}/tags','get','200','/diagrams/{diagram_id}/tags-get-200')">
-                                    </div>                            
-
-                                    
-                                        <div class="mb-3">
-                                            <label for="/diagrams/{diagram_id}/tags-get-200-description" class="form-label">Description:</label>
-                                            <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags-get-200-description" value="200 response" onchange="updateOperationResponseDescription('/diagrams/{diagram_id}/tags','get','200','/diagrams/{diagram_id}/tags-get-200-description')">
-                                        </div>                                       
-                                    
-
-                                    
-                                        <p><strong>Headers</strong></p>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Type</th>
-                                                <th scope="col">Descripton</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-200-Access-Control-Allow-Origin" value="Access-Control-Allow-Origin" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags','get','200','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags-get-200-Access-Control-Allow-Origin')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-get-200-Access-Control-Allow-Origin-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags','get','200','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags-get-200-Access-Control-Allow-Origin-schema-type')"></td>
-                                                </tr>
-                                              
-                                            </tbody>
-                                        </table> 
-                                                                        
-
-                                    
-                                        <p><strong>Content</strong></p>  
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Schema</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                               
-                                            
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
-                                                    <td>
-                                                        <select class="form-control" id="/diagrams/{diagram_id}/tags-get-200-application/json" onchange="updateOperationResponseContent('/diagrams/{diagram_id}/tags','get','200','application/json','/diagrams/{diagram_id}/tags-get-200-application/json')">
-                                                            
-                                                            
-                                                                <option value="Diagrams">Diagrams</option>"
-                                                            
-                                                                <option value="Tag">Tag</option>"
-                                                            
-                                                                <option value="Diagram">Diagram</option>"
-                                                            
-                                                                <option value="Tags" selected>Tags</option>"
-                                                              
-                                                        </select>                                                        
-                                                    </td>
-                                                </tr>
-                                                 
-                                              
-                                            </tbody>
-                                        </table>                                                                          
-                                     
-                           
-                                                       
-                                                            
-
-                    
-
-                        
-
-                        <h4><span style="color:#FF5733;">POST</span> Diagram Tag</h4>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-post" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post" value="post" onchange="updateMethod('/diagrams/{diagram_id}/tags','post','/diagrams/{diagram_id}/tags-post')">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-post-summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-summary" value="Diagram Tag" onchange="updateOperationSummary('/diagrams/{diagram_id}/tags','post','/diagrams/{diagram_id}/tags-post-summary')">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-post-description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-description" value="Adds a tag for a diagram." onchange="updateOperationDescription('/diagrams/{diagram_id}/tags','post','/diagrams/{diagram_id}/tags-post-description')">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                                                    
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-0-name" value="diagram_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags','post','0','/diagrams/{diagram_id}/tags-post-0-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-0-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags','post','0','/diagrams/{diagram_id}/tags-post-0-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-0-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags','post','0','/diagrams/{diagram_id}/tags-post-0-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-0-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags','post','0','/diagrams/{diagram_id}/tags-post-0-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-0-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags','post','0','/diagrams/{diagram_id}/tags-post-0-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                </tbody>
-                            </table>
-                        
-
-                        
-                            <h5>Request Body:</h5>
-                            <div class="mb-3">
-                                <label for="response-status-code" class="form-label">Request Body:</label>
-                                <select class="form-control" id="/diagrams/{diagram_id}/tags-post-requestBody" onchange="updateOperationRequestBody('/diagrams/{diagram_id}/tags','post','/diagrams/{diagram_id}/tags-post-requestBody')">
-                                    
-                                    
-                                        <option value="Diagrams">Diagrams</option>"
-                                    
-                                        <option value="Tag">Tag</option>"
-                                    
-                                        <option value="Diagram" selected>Diagram</option>"
-                                    
-                                        <option value="Tags">Tags</option>"
-                                      
-                                </select>
-                            </div>                              
-                          
-                        
-                        
-                            <h5>Responses:</h5>
-                            
-
-                                    <div class="mb-3">
-                                        <label for="/diagrams/{diagram_id}/tags-post-201" class="form-label">Status Code:</label>
-                                        <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags-post-201" value="201" onchange="updateOperationResponse('/diagrams/{diagram_id}/tags','post','201','/diagrams/{diagram_id}/tags-post-201')">
-                                    </div>                            
-
-                                    
-                                        <div class="mb-3">
-                                            <label for="/diagrams/{diagram_id}/tags-post-201-description" class="form-label">Description:</label>
-                                            <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags-post-201-description" value="201 response" onchange="updateOperationResponseDescription('/diagrams/{diagram_id}/tags','post','201','/diagrams/{diagram_id}/tags-post-201-description')">
-                                        </div>                                       
-                                    
-
-                                    
-                                        <p><strong>Headers</strong></p>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Type</th>
-                                                <th scope="col">Descripton</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-201-Access-Control-Allow-Origin" value="Access-Control-Allow-Origin" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags','post','201','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags-post-201-Access-Control-Allow-Origin')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-post-201-Access-Control-Allow-Origin-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags','post','201','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags-post-201-Access-Control-Allow-Origin-schema-type')"></td>
-                                                </tr>
-                                              
-                                            </tbody>
-                                        </table> 
-                                                                        
-
-                                     
-                           
-                                                       
-                                                            
-
-                    
-
-                        
-
-                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-options" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options" value="options" onchange="updateMethod('/diagrams/{diagram_id}/tags','options','/diagrams/{diagram_id}/tags-options')">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags-options-summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-summary" value="" onchange="updateOperationSummary('/diagrams/{diagram_id}/tags','options','/diagrams/{diagram_id}/tags-options-summary')">
-                        </div>                        
-
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                                                    
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-0-name" value="diagram_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags','options','0','/diagrams/{diagram_id}/tags-options-0-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-0-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags','options','0','/diagrams/{diagram_id}/tags-options-0-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-0-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags','options','0','/diagrams/{diagram_id}/tags-options-0-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-0-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags','options','0','/diagrams/{diagram_id}/tags-options-0-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-0-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags','options','0','/diagrams/{diagram_id}/tags-options-0-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                </tbody>
-                            </table>
-                        
-
-                          
-                        
-                        
-                            <h5>Responses:</h5>
-                            
-
-                                    <div class="mb-3">
-                                        <label for="/diagrams/{diagram_id}/tags-options-200" class="form-label">Status Code:</label>
-                                        <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags-options-200" value="200" onchange="updateOperationResponse('/diagrams/{diagram_id}/tags','options','200','/diagrams/{diagram_id}/tags-options-200')">
-                                    </div>                            
-
-                                    
-                                        <div class="mb-3">
-                                            <label for="/diagrams/{diagram_id}/tags-options-200-description" class="form-label">Description:</label>
-                                            <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-description" value="200 response" onchange="updateOperationResponseDescription('/diagrams/{diagram_id}/tags','options','200','/diagrams/{diagram_id}/tags-options-200-description')">
-                                        </div>                                       
-                                    
-
-                                    
-                                        <p><strong>Headers</strong></p>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Type</th>
-                                                <th scope="col">Descripton</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Origin" value="Access-Control-Allow-Origin" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags','options','200','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Origin')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Origin-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags','options','200','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Origin-schema-type')"></td>
-                                                </tr>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Methods" value="Access-Control-Allow-Methods" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags','options','200','Access-Control-Allow-Methods','/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Methods')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Methods-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags','options','200','Access-Control-Allow-Methods','/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Methods-schema-type')"></td>
-                                                </tr>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Headers" value="Access-Control-Allow-Headers" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags','options','200','Access-Control-Allow-Headers','/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Headers')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Headers-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags','options','200','Access-Control-Allow-Headers','/diagrams/{diagram_id}/tags-options-200-Access-Control-Allow-Headers-schema-type')"></td>
-                                                </tr>
-                                              
-                                            </tbody>
-                                        </table> 
-                                                                        
-
-                                     
-                           
-                                                       
-                                                            
-
-                      
-
-                    </div>
-                </div>
-            </div>              
-
-        
-
-            
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}" value="/diagrams/{diagram_id}/tags/{tag_id}" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updatePath('/diagrams/{diagram_id}/tags/{tag_id}')">
-                    </div>                    
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    
-                    
-
-                        
-
-                        <h4><span style="color:#C70039;">DELETE</span> Diagram Tag</h4>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-delete" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete" value="delete" onchange="updateMethod('/diagrams/{diagram_id}/tags/{tag_id}','delete','/diagrams/{diagram_id}/tags/{tag_id}-delete')">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-delete-summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-summary" value="Diagram Tag" onchange="updateOperationSummary('/diagrams/{diagram_id}/tags/{tag_id}','delete','/diagrams/{diagram_id}/tags/{tag_id}-delete-summary')">
-                        </div>                        
-
-                        
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-delete-description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-description" value="Deletes a diagram tag." onchange="updateOperationDescription('/diagrams/{diagram_id}/tags/{tag_id}','delete','/diagrams/{diagram_id}/tags/{tag_id}-delete-description')">
-                        </div> 
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                                                    
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-0-name" value="diagram_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags/{tag_id}','delete','0','/diagrams/{diagram_id}/tags/{tag_id}-delete-0-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-0-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags/{tag_id}','delete','0','/diagrams/{diagram_id}/tags/{tag_id}-delete-0-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-0-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags/{tag_id}','delete','0','/diagrams/{diagram_id}/tags/{tag_id}-delete-0-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-0-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags/{tag_id}','delete','0','/diagrams/{diagram_id}/tags/{tag_id}-delete-0-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-0-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags/{tag_id}','delete','0','/diagrams/{diagram_id}/tags/{tag_id}-delete-0-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-1-name" value="tag_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags/{tag_id}','delete','1','/diagrams/{diagram_id}/tags/{tag_id}-delete-1-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-1-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags/{tag_id}','delete','1','/diagrams/{diagram_id}/tags/{tag_id}-delete-1-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-1-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags/{tag_id}','delete','1','/diagrams/{diagram_id}/tags/{tag_id}-delete-1-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-1-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags/{tag_id}','delete','1','/diagrams/{diagram_id}/tags/{tag_id}-delete-1-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-1-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags/{tag_id}','delete','1','/diagrams/{diagram_id}/tags/{tag_id}-delete-1-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                </tbody>
-                            </table>
-                        
-
-                          
-                        
-                        
-                            <h5>Responses:</h5>
-                            
-
-                                    <div class="mb-3">
-                                        <label for="/diagrams/{diagram_id}/tags/{tag_id}-delete-204" class="form-label">Status Code:</label>
-                                        <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-204" value="204" onchange="updateOperationResponse('/diagrams/{diagram_id}/tags/{tag_id}','delete','204','/diagrams/{diagram_id}/tags/{tag_id}-delete-204')">
-                                    </div>                            
-
-                                    
-                                        <div class="mb-3">
-                                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-delete-204-description" class="form-label">Description:</label>
-                                            <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-204-description" value="204 response" onchange="updateOperationResponseDescription('/diagrams/{diagram_id}/tags/{tag_id}','delete','204','/diagrams/{diagram_id}/tags/{tag_id}-delete-204-description')">
-                                        </div>                                       
-                                    
-
-                                    
-                                        <p><strong>Headers</strong></p>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Type</th>
-                                                <th scope="col">Descripton</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-204-Access-Control-Allow-Origin" value="Access-Control-Allow-Origin" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags/{tag_id}','delete','204','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags/{tag_id}-delete-204-Access-Control-Allow-Origin')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-delete-204-Access-Control-Allow-Origin-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags/{tag_id}','delete','204','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags/{tag_id}-delete-204-Access-Control-Allow-Origin-schema-type')"></td>
-                                                </tr>
-                                              
-                                            </tbody>
-                                        </table> 
-                                                                        
-
-                                     
-                           
-                                                       
-                                                            
-
-                    
-
-                        
-
-                        <h4><span style="color:#0006FF;">OPTIONS</span> </h4>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-options" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options" value="options" onchange="updateMethod('/diagrams/{diagram_id}/tags/{tag_id}','options','/diagrams/{diagram_id}/tags/{tag_id}-options')">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-options-summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-summary" value="" onchange="updateOperationSummary('/diagrams/{diagram_id}/tags/{tag_id}','options','/diagrams/{diagram_id}/tags/{tag_id}-options-summary')">
-                        </div>                        
-
-                        
-
-                        
-                            <h5>Parameters</h5>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Required</th>
-                                    <th scope="col">Descripton</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                                                    
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-0-name" value="diagram_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags/{tag_id}','options','0','/diagrams/{diagram_id}/tags/{tag_id}-options-0-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-0-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags/{tag_id}','options','0','/diagrams/{diagram_id}/tags/{tag_id}-options-0-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-0-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags/{tag_id}','options','0','/diagrams/{diagram_id}/tags/{tag_id}-options-0-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-0-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags/{tag_id}','options','0','/diagrams/{diagram_id}/tags/{tag_id}-options-0-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-0-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags/{tag_id}','options','0','/diagrams/{diagram_id}/tags/{tag_id}-options-0-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                    <tr>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-1-name" value="tag_id" onchange="updateOperationParameterName('/diagrams/{diagram_id}/tags/{tag_id}','options','1','/diagrams/{diagram_id}/tags/{tag_id}-options-1-name')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-1-in" value="path" onchange="updateOperationParameterIn('/diagrams/{diagram_id}/tags/{tag_id}','options','1','/diagrams/{diagram_id}/tags/{tag_id}-options-1-in')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-1-required" value="true" onchange="updateOperationParameterRequired('/diagrams/{diagram_id}/tags/{tag_id}','options','1','/diagrams/{diagram_id}/tags/{tag_id}-options-1-required')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-1-schema" value="string" onchange="updateOperationParameterSchema('/diagrams/{diagram_id}/tags/{tag_id}','options','1','/diagrams/{diagram_id}/tags/{tag_id}-options-1-schema')"></td>
-                                        <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-1-description" value="" onchange="updateOperationParameterDescription('/diagrams/{diagram_id}/tags/{tag_id}','options','1','/diagrams/{diagram_id}/tags/{tag_id}-options-1-description')"></td>
-                                    </tr>
-                                     
-                                    
-                                </tbody>
-                            </table>
-                        
-
-                          
-                        
-                        
-                            <h5>Responses:</h5>
-                            
-
-                                    <div class="mb-3">
-                                        <label for="/diagrams/{diagram_id}/tags/{tag_id}-options-200" class="form-label">Status Code:</label>
-                                        <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200" value="200" onchange="updateOperationResponse('/diagrams/{diagram_id}/tags/{tag_id}','options','200','/diagrams/{diagram_id}/tags/{tag_id}-options-200')">
-                                    </div>                            
-
-                                    
-                                        <div class="mb-3">
-                                            <label for="/diagrams/{diagram_id}/tags/{tag_id}-options-200-description" class="form-label">Description:</label>
-                                            <input type="email" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-description" value="200 response" onchange="updateOperationResponseDescription('/diagrams/{diagram_id}/tags/{tag_id}','options','200','/diagrams/{diagram_id}/tags/{tag_id}-options-200-description')">
-                                        </div>                                       
-                                    
-
-                                    
-                                        <p><strong>Headers</strong></p>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Type</th>
-                                                <th scope="col">Descripton</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Origin" value="Access-Control-Allow-Origin" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags/{tag_id}','options','200','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Origin')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Origin-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags/{tag_id}','options','200','Access-Control-Allow-Origin','/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Origin-schema-type')"></td>
-                                                </tr>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Methods" value="Access-Control-Allow-Methods" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags/{tag_id}','options','200','Access-Control-Allow-Methods','/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Methods')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Methods-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags/{tag_id}','options','200','Access-Control-Allow-Methods','/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Methods-schema-type')"></td>
-                                                </tr>
-                                             
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Headers" value="Access-Control-Allow-Headers" onchange="updateOperationResponseHeader('/diagrams/{diagram_id}/tags/{tag_id}','options','200','Access-Control-Allow-Headers','/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Headers')"></td>
-                                                    <td><input type="text" class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Headers-schema-type" value="string" onchange="updateOperationResponseHeaderSchemaType('/diagrams/{diagram_id}/tags/{tag_id}','options','200','Access-Control-Allow-Headers','/diagrams/{diagram_id}/tags/{tag_id}-options-200-Access-Control-Allow-Headers-schema-type')"></td>
-                                                </tr>
-                                              
-                                            </tbody>
-                                        </table> 
-                                                                        
-
-                                    
-                                        <p><strong>Content</strong></p>  
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Schema</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                               
-                                            
-                                                <tr>
-                                                    <td><input type="text" class="form-control" id="name" value="application/json"></td>
-                                                    <td>
-                                                        <select class="form-control" id="/diagrams/{diagram_id}/tags/{tag_id}-options-200-application/json" onchange="updateOperationResponseContent('/diagrams/{diagram_id}/tags/{tag_id}','options','200','application/json','/diagrams/{diagram_id}/tags/{tag_id}-options-200-application/json')">
-                                                            
-                                                            
-                                                                <option value="Diagrams">Diagrams</option>"
-                                                            
-                                                                <option value="Tag">Tag</option>"
-                                                            
-                                                                <option value="Diagram" selected>Diagram</option>"
-                                                            
-                                                                <option value="Tags">Tags</option>"
-                                                              
-                                                        </select>                                                        
-                                                    </td>
-                                                </tr>
-                                                 
-                                              
-                                            </tbody>
-                                        </table>                                                                          
-                                     
-                           
-                                                       
-                                                            
-
-                      
-
-                    </div>
-                </div>
-            </div>              
-
-        
-
     </div>
 
     <h1>Response Bodies</h1>
@@ -1900,11 +1263,7 @@
                                             
                                                 <option value="Diagrams">Diagrams</option>"
                                             
-                                                <option value="Tag">Tag</option>"
-                                            
                                                 <option value="Diagram" selected>Diagram</option>"
-                                            
-                                                <option value="Tags">Tags</option>"
                                               
                                         </select>                                          
                                     </td>
@@ -1953,11 +1312,7 @@
                                 
                                     <option value="Diagrams">Diagrams</option>"
                                 
-                                    <option value="Tag">Tag</option>"
-                                
                                     <option value="Diagram" selected>Diagram</option>"
-                                
-                                    <option value="Tags">Tags</option>"
                                   
                             </select>                             
                         </div>                         
@@ -1965,77 +1320,6 @@
 
                     
 
-                                      
-
-                </div>
-                </div>
-            </div>              
-
-        
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <a name="schema-Tag"></a>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="Tag" value="Tag" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updateSchema('Tag')">
-                    </div>                         
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-
-                    <div class="mb-3">
-                        <label for="Tag-type" class="form-label">Type:</label>
-                        <input type="email" class="form-control" id="Tag-type" value="object" onchange="updateSchemaType('Tag','Tag-type')">
-                    </div> 
-                    
-                    
-
-                    
-                        <p><strong>Properties:</strong></p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Descripton</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                
-                                <tr>
-                                    <td><input type="text" class="form-control" id="name" value="name"></td>
-                                    <td><input type="text" class="form-control" id="Tag-name-type" value="string" onchange="updateSchemaPropertySchemaType('Tag','name','Tag-name-type')"></td>
-                                    <td><input type="text" class="form-control" id="Tag-name-description" value="" onchange="updateSchemaPropertyDescription('Tag','name','Tag-name-description')"></td>
-                                </tr>
-                            
-                                <tr>
-                                    <td><input type="text" class="form-control" id="name" value="description"></td>
-                                    <td><input type="text" class="form-control" id="Tag-description-type" value="string" onchange="updateSchemaPropertySchemaType('Tag','description','Tag-description-type')"></td>
-                                    <td><input type="text" class="form-control" id="Tag-description-description" value="" onchange="updateSchemaPropertyDescription('Tag','description','Tag-description-description')"></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>                         
-                    
-
-                    
-                        <p><strong>Required:</strong></p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                
-                                <tr>
-                                    <td><input type="text" class="form-control" id="name" value="name"></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>                            
                                       
 
                 </div>
@@ -2119,52 +1403,6 @@
                               
                             </tbody>
                         </table>                            
-                                      
-
-                </div>
-                </div>
-            </div>              
-
-        
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <a name="schema-Tags"></a>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="Tags" value="Tags" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updateSchema('Tags')">
-                    </div>                         
-                </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-
-                    <div class="mb-3">
-                        <label for="Tags-type" class="form-label">Type:</label>
-                        <input type="email" class="form-control" id="Tags-type" value="array" onchange="updateSchemaType('Tags','Tags-type')">
-                    </div> 
-                    
-                    
-                        <p><strong>Items:</strong></p>
-                        <div class="mb-3">
-                            <label for="response-description" class="form-label">Schema:</label>
-                            <select class="form-control" id="Tags-items" onchange="updateSchemaItems('Tags','Tags-items')">
-                                
-                                
-                                    <option value="Diagrams">Diagrams</option>"
-                                
-                                    <option value="Tag" selected>Tag</option>"
-                                
-                                    <option value="Diagram">Diagram</option>"
-                                
-                                    <option value="Tags">Tags</option>"
-                                  
-                            </select>                             
-                        </div>                         
-                    
-
-                    
-
                                       
 
                 </div>

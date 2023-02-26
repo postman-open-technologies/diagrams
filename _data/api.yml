@@ -130,6 +130,7 @@ paths:
         - name: diagram_id
           in: path
           required: true
+          example: 857
           schema:
             type: string
       responses:
@@ -171,6 +172,7 @@ paths:
         - name: diagram_id
           in: path
           required: true
+          example: 857
           schema:
             type: string
       requestBody:
@@ -211,6 +213,7 @@ paths:
         - name: diagram_id
           in: path
           required: true
+          example: 857
           schema:
             type: string
       responses:
@@ -274,208 +277,6 @@ paths:
           application/json: '{"statusCode": 200}'
         passthroughBehavior: when_no_match
         type: mock
-  '/diagrams/{diagram_id}/tags':
-    get:
-      summary: Diagram Tags
-      description: Returns all of the tags for a diagram.
-      parameters:
-        - name: diagram_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tags'
-      security:
-        - api_key: []
-      x-amazon-apigateway-integration:
-        httpMethod: POST
-        uri: >-
-          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-g/invocations
-        responses:
-          default:
-            statusCode: '200'
-            responseParameters:
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-        requestParameters:
-          integration.request.path.diagram_id: method.request.path.diagram_id
-        requestTemplates:
-          application/json: |-
-            {
-                "diagram_id" : "$input.params('diagram_id')"
-            }
-        passthroughBehavior: when_no_templates
-        contentHandling: CONVERT_TO_TEXT
-        type: aws
-    post:
-      summary: Diagram Tag
-      description: Adds a tag for a diagram.
-      parameters:
-        - name: diagram_id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: '#/components/requestBodies/Diagram'
-      responses:
-        '201':
-          description: 201 response
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-      security:
-        - api_key: []
-      x-amazon-apigateway-integration:
-        httpMethod: POST
-        uri: >-
-          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-po/invocations
-        responses:
-          default:
-            statusCode: '201'
-            responseParameters:
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-        requestParameters:
-          integration.request.path.diagram_id: method.request.path.diagram_id
-        requestTemplates:
-          application/json: |-
-            {
-                "diagram_id" : "$input.params('diagram_id')",
-                "tag_id" : "$input.json('$.tag_id')"
-            }
-        passthroughBehavior: when_no_templates
-        contentHandling: CONVERT_TO_TEXT
-        type: aws
-    options:
-      parameters:
-        - name: diagram_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-      x-amazon-apigateway-integration:
-        responses:
-          default:
-            statusCode: '200'
-            responseParameters:
-              method.response.header.Access-Control-Allow-Methods: '''GET,OPTIONS,POST'''
-              method.response.header.Access-Control-Allow-Headers: >-
-                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-        requestTemplates:
-          application/json: '{"statusCode": 200}'
-        passthroughBehavior: when_no_match
-        type: mock
-  '/diagrams/{diagram_id}/tags/{tag_id}':
-    delete:
-      summary: Diagram Tag
-      description: Deletes a diagram tag.
-      parameters:
-        - name: diagram_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: tag_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 204 response
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-      security:
-        - api_key: []
-      x-amazon-apigateway-integration:
-        httpMethod: POST
-        uri: >-
-          arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-tags-tag-d/invocations
-        responses:
-          default:
-            statusCode: '204'
-            responseParameters:
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-        requestParameters:
-          integration.request.path.tag_id: method.request.path.tag_id
-          integration.request.path.diagram_id: method.request.path.diagram_id
-        requestTemplates:
-          application/json: |-
-            {
-                "diagram_id" : "$input.params('diagram_id')",
-                "tag_id" : "$input.params('tag_id')"
-            }
-        passthroughBehavior: when_no_templates
-        contentHandling: CONVERT_TO_TEXT
-        type: aws
-    options:
-      parameters:
-        - name: diagram_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: tag_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Diagram'
-      x-amazon-apigateway-integration:
-        responses:
-          default:
-            statusCode: '200'
-            responseParameters:
-              method.response.header.Access-Control-Allow-Methods: '''DELETE,OPTIONS'''
-              method.response.header.Access-Control-Allow-Headers: >-
-                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-        requestTemplates:
-          application/json: '{"statusCode": 200}'
-        passthroughBehavior: when_no_match
-        type: mock
 components:
   requestBodies:
     Diagram:
@@ -488,7 +289,7 @@ components:
             description: The description.
             url: https://example.com/
             image: https://example.com/image.jpeg             
-      required: true
+      required: true    
   securitySchemes:
     api_key:
       type: apiKey
@@ -505,19 +306,6 @@ components:
           description: The description.
           url: https://example.com/
           image: https://example.com/image.jpeg          
-    Tag:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-      example:
-        id: 857
-        name: Example Tag
-        description: The description.
     Diagram:
       type: object
       required:
@@ -537,11 +325,3 @@ components:
         description: The description.
         url: https://example.com/
         image: https://example.com/image.jpeg            
-    Tags:
-      type: array
-      items:
-        $ref: '#/components/schemas/Tag'
-      example:
-        - id: 1
-          name: Example Image
-          description: The description.
