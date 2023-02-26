@@ -76,10 +76,10 @@ title: Editor
 name: Diagrams  
 on: [push]
 jobs:
-    deploy_source:
+  deploy_source:
     name: Deploy API Using Lambda
     strategy:
-        matrix:
+      matrix:
         node-version: [12.x]
     runs-on: ubuntu-latest
     steps:

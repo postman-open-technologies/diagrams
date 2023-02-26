@@ -2,12 +2,12 @@ name: Diagrams
 on: [push]
 jobs:
     deploy_source:
-    name: Deploy API Using Lambda
-    strategy:
+     name: Deploy API Using Lambda
+     strategy:
         matrix:
-        node-version: [12.x]
-    runs-on: ubuntu-latest
-    steps:
+          node-version: [12.x]
+     runs-on: ubuntu-latest
+     steps:
     
         - uses: actions/checkout@v1
         - name: Use Node.js $
