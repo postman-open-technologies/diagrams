@@ -7,21 +7,362 @@ title: Editor
 <div class="container">
 
     {% assign api = site.data.api %}
+    {% assign openapi = site.data.api | jsonify %}
+
+    <div class="row">
+        <script>
+            function changeToken(t){
+                Cookies.set('token',t)
+            }
+            function changeGToken(t){
+                Cookies.set('gtoken',t)
+            }	
+            function viewOpenAPI(){
+            
+                if(document.getElementById('openapi').style.display == 'none'){
+                    document.getElementById('openapi').style.display = '';
+                }
+                else{
+                    document.getElementById('openapi').style.display = 'none';
+                }
+            
+            }          			
+        </script>
+        <div class="col">				
+            <input type="text" width="200" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
+        </div>
+        <div class="col">				
+            <input type="text" width="200" class="form-control" id="gtoken" name="gtoken" value="" placeholder="Github Token" onchange="changeGToken();"><br>
+        </div>			
+        <div class="col">
+            <input type="button" class="btn btn-success" name="show" value="Publish" onclick="publishREADMEToGithub();">
+            <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
+        </div>      				
+    </div>   
+
+    <script>
+        var token = getUrlVar('token');	
+        if(token){
+            document.getElementById('token').value = token;		
+            changeToken(token);
+        }
+
+        var gtoken = getUrlVar('gtoken');	
+        if(gtoken){
+            document.getElementById('gtoken').value = gtoken;		
+            changeGToken(gtoken);
+        }							
+
+        var stored_token = Cookies.get('token');
+        if(stored_token){
+            document.getElementById('token').value = stored_token;	
+        }
+
+        var stored_gtoken = Cookies.get('gtoken');
+        if(stored_gtoken){
+            document.getElementById('gtoken').value = stored_gtoken;	
+        }			
+    </script>     
+    
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{{ openapi }}</textarea>           
 
     <h1>{{ api.info.title }}</h1>
     <p>{{ api.info.description }}</p>   
 
+    <script>        
+
+        function publishREADMEToGithub(){
+
+            gtoken = document.getElementById("gtoken").value;	
+
+            const options = {
+                method: 'get',
+                headers: {
+                    "Accept": "application/vnd.github+json",
+                    "Authorization": 'Bearer ' + gtoken
+                }
+            };	
+
+            fetch('https://api.github.com/repos/postman-open-technologies/diagrams/contents/_data/api.yml',options)
+                .then(function(response) {
+                    if (!response.ok) {
+                        console.log('Error with Status Code: ' + response.status);
+                        return;
+                    }
+                    response.json().then(function(data) {	
+
+                        var sha = data.sha;
+
+                        var openapi = JSON.parse(document.getElementById('openapi').value);
+                        var openapi_yaml = jsyaml.dump(openapi);
+
+                        var c = {};
+                        c.name = "Kin Lane";
+                        c.email = "kinlane@gmail.com";
+
+                        var m = {};
+                        m.message = 'Publishing OpenAPI';
+                        m.committer = c;
+                        m.sha = sha;
+                        m.content = btoa(unescape(encodeURIComponent(openapi_yaml)))
+
+                        const options = {
+                            method: 'PUT',
+                            headers: {
+                                "Accept": "application/vnd.github+json",
+                                "Authorization": 'Bearer ' + gtoken									
+                            },
+                            body: JSON.stringify(m)
+                        };	
+
+                        fetch('https://api.github.com/repos/postman-open-technologies/diagrams/contents/_data/api.yml',options)
+                            .then(function(response) {
+                                if (!response.ok) {
+                                    console.log('Error with Status Code: ' + response.status);
+                                    return;
+                                }
+                                response.json().then(function(data) {	
+                                    //console.log(data);																			 
+                                });
+                            })
+                            .catch(function(err) {
+                                console.log('Error: ' + err);
+                        });	
+
+
+                    });
+                })
+                .catch(function(err) {
+                    console.log('Error: ' + err);
+            });
+
+            }	        
+
+        function updatePath(path){
+            console.log("path: " + path);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[document.getElementById(path).value] = openapi.paths[path];
+            delete openapi.paths[path];
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }
+
+        function updateMethod(path,method,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][document.getElementById(id).value] = openapi.paths[path][method];
+            delete openapi.paths[path][method];
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }
+
+        function updateOperationSummary(path,method,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].summary = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }
+
+        function updateOperationDescription(path,method,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].description = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }         
+            
+        function updateOperationParameterName(path,method,pid,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("pid: " + pid);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].parameters[pid].name = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }   
+
+        function updateOperationParameterIn(path,method,pid,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("pid: " + pid);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].parameters[pid].in = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }   
+        
+        function updateOperationParameterRequired(path,method,pid,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("pid: " + pid);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].parameters[pid].required = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }  
+
+        function updateOperationParameterSchema(path,method,pid,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("pid: " + pid);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].parameters[pid].schema.type = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }              
+            
+        function updateOperationParameterDescription(path,method,pid,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("pid: " + pid);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].parameters[pid].description = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }  
+
+        function updateOperationRequestBody(path,method,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].requestBody['$ref'] = '#/components/requestBodies/' + document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }  
+            
+        function updateOperationResponse(path,method,response,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("response: " + response);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].responses[document.getElementById(id).value] = openapi.paths[path][method].responses[response];
+            delete openapi.paths[path][method].responses[response];
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            } 
+
+        function updateOperationResponseDescription(path,method,response,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("response: " + response);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].responses[response].description = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            } 
+            
+        function updateOperationResponseHeader(path,method,response,header,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("response: " + response);
+            console.log("header: " + header);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].responses[response].headers[document.getElementById(id).value] = openapi.paths[path][method].responses[response].headers[header];
+            delete openapi.paths[path][method].responses[response].headers[header];
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }
+
+        function updateOperationResponseContent(path,method,response,content,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("response: " + response);
+            console.log("content: " + content);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].responses[response].content[content].schema['$ref'] = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }            
+
+        function updateOperationResponseHeaderSchemaType(path,method,response,header,id){
+            console.log("path: " + path);
+            console.log("method: " + method);
+            console.log("response: " + response);
+            console.log("header: " + header);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.paths[path][method].responses[response].headers[header].schema.type = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }       
+            
+         function updateRequestBody(requestBody){
+            console.log("requestBody: " + requestBody);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.requestBodies[document.getElementById(requestBody).value] = openapi.components.requestBodies[requestBody]
+            delete openapi.components.requestBodies[requestBody];
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            } 
+
+        function updateRequestBodyItems(requestBody,content,id){
+            console.log("requestBody: " + requestBody);
+            console.log("content: " + content);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.requestBodies[requestBody].content[content].schema['$ref'] = '#/components/schemas/' + document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }                                
+
+        function updateSchema(schema){
+            console.log("schema: " + schema);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.schemas[document.getElementById(schema).value] = openapi.components.schemas[schema]
+            delete openapi.components.schemas[schema];
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            } 
+
+        function updateSchemaType(schema,id){
+            console.log("schema: " + schema);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.schemas[schema].type = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            } 
+
+        function updateSchemaItems(schema,id){
+            console.log("schema: " + schema);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.schemas[schema].items['$ref'] = '#/components/schemas/' + document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }            
+
+        function updateSchemaPropertyDescription(schema,property,id){
+            console.log("schema: " + schema);
+            console.log("property: " + property);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.schemas[schema].properties[property].description = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }   
+
+        function updateSchemaPropertySchemaType(schema,property,id){
+            console.log("schema: " + schema);
+            console.log("property: " + property);
+            console.log("id: " + id);
+            var openapi = JSON.parse(document.getElementById("openapi").value);
+            openapi.components.schemas[schema].properties[property].type = document.getElementById(id).value;
+            document.getElementById("openapi").value = JSON.stringify(openapi, null, 2);
+            }             
+
+                
+                                    
+    </script>
 
     <h1>Paths</h1>
     <div class="accordion" id="accordionExample">
 
         {% for path in api.paths %}
 
+            {% assign cleanPath = path[0] | replace: '/','' | replace: '{','' | replace: '}','' %}
+
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ path[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                        <input type="text" class="form-control" id="{{ path[0] }}" value="{{ path[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updatePath('{{ path[0] }}')">
                     </div>                    
                 </button>
                 </h2>
@@ -45,19 +386,19 @@ title: Editor
                         <h4><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</h4>
 
                         <div class="mb-3">
-                            <label for="method" class="form-label">Method:</label>
-                            <input type="text" class="form-control" id="method" value="{{ method[0] }}">
+                            <label for="{{ path[0] }}-{{ method[0] }}" class="form-label">Method:</label>
+                            <input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}" value="{{ method[0] }}" onchange="updateMethod('{{ path[0] }}','{{ method[0] }}','{{ path[0] }}-{{ method[0] }}')">
                         </div>
 
                         <div class="mb-3">
-                            <label for="summary" class="form-label">Summary:</label>
-                            <input type="text" class="form-control" id="summary" value="{{ method[1].summary }}">
+                            <label for="{{ path[0] }}-{{ method[0] }}-summary" class="form-label">Summary:</label>
+                            <input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-summary" value="{{ method[1].summary }}" onchange="updateOperationSummary('{{ path[0] }}','{{ method[0] }}','{{ path[0] }}-{{ method[0] }}-summary')">
                         </div>                        
 
                         {% if method[1].description %}
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="description" value="{{ method[1].description }}">
+                            <label for="{{ path[0] }}-{{ method[0] }}-description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-description" value="{{ method[1].description }}" onchange="updateOperationDescription('{{ path[0] }}','{{ method[0] }}','{{ path[0] }}-{{ method[0] }}-description')">
                         </div> 
                         {% endif %}
 
@@ -72,12 +413,16 @@ title: Editor
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {% assign counter = 0 %}                                  
                                   {% for parameter in method[1].parameters %}  
                                     <tr>
-                                        <td><input type="text" class="form-control" id="name" value="{{ parameter.name }}"></td>
-                                        <td><input type="text" class="form-control" id="required" value="{{ parameter.required }}"></td>
-                                        <td><input type="text" class="form-control" id="description" value="{{ parameter.description }}"></td>
+                                        <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ counter }}-name" value="{{ parameter.name }}" onchange="updateOperationParameterName('{{ path[0] }}','{{ method[0] }}','{{ counter }}','{{ path[0] }}-{{ method[0] }}-{{ counter }}-name')"></td>
+                                        <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ counter }}-in" value="{{ parameter.in }}" onchange="updateOperationParameterIn('{{ path[0] }}','{{ method[0] }}','{{ counter }}','{{ path[0] }}-{{ method[0] }}-{{ counter }}-in')"></td>
+                                        <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ counter }}-required" value="{{ parameter.required }}" onchange="updateOperationParameterRequired('{{ path[0] }}','{{ method[0] }}','{{ counter }}','{{ path[0] }}-{{ method[0] }}-{{ counter }}-required')"></td>
+                                        <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ counter }}-schema" value="{{ parameter.schema.type }}" onchange="updateOperationParameterSchema('{{ path[0] }}','{{ method[0] }}','{{ counter }}','{{ path[0] }}-{{ method[0] }}-{{ counter }}-schema')"></td>
+                                        <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ counter }}-description" value="{{ parameter.description }}" onchange="updateOperationParameterDescription('{{ path[0] }}','{{ method[0] }}','{{ counter }}','{{ path[0] }}-{{ method[0] }}-{{ counter }}-description')"></td>
                                     </tr>
+                                    {% assign counter = counter | plus: 1 %} 
                                   {% endfor %}  
                                 </tbody>
                             </table>
@@ -87,7 +432,12 @@ title: Editor
                             <h5>Request Body:</h5>
                             <div class="mb-3">
                                 <label for="response-status-code" class="form-label">Request Body:</label>
-                                <input type="email" class="form-control" id="response-status-code" placeholder="{{ method[1].requestBody['$ref'] | replace: '#/components/requestBodies/','' }}">
+                                <select class="form-control" id="{{ path[0] }}-{{ method[0] }}-requestBody" onchange="updateOperationRequestBody('{{ path[0] }}','{{ method[0] }}','{{ path[0] }}-{{ method[0] }}-requestBody')">
+                                    {% assign this_schema = method[1].requestBody['$ref'] | replace: '#/components/requestBodies/','' %}
+                                    {% for schema in api.components.schemas %}
+                                        <option value="{{ schema[0] }}"{% if this_schema == schema[0] %} selected{% endif %}>{{ schema[0] }}</option>"
+                                    {% endfor %}  
+                                </select>
                             </div>                              
                         {% endif %}  
                         
@@ -96,14 +446,14 @@ title: Editor
                             {% for response in method[1].responses %}
 
                                     <div class="mb-3">
-                                        <label for="response-status-code" class="form-label">Status Code:</label>
-                                        <input type="email" class="form-control" id="response-status-code" placeholder="{{ response[0] }}">
+                                        <label for="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}" class="form-label">Status Code:</label>
+                                        <input type="email" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}" value="{{ response[0] }}" onchange="updateOperationResponse('{{ path[0] }}','{{ method[0] }}','{{ response[0] }}','{{ path[0] }}-{{ method[0] }}-{{ response[0] }}')">
                                     </div>                            
 
                                     {% if response[1].description %}
                                         <div class="mb-3">
-                                            <label for="response-description" class="form-label">Description:</label>
-                                            <input type="email" class="form-control" id="response-description" placeholder="{{ response[1].description }}">
+                                            <label for="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-description" class="form-label">Description:</label>
+                                            <input type="email" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-description" value="{{ response[1].description }}" onchange="updateOperationResponseDescription('{{ path[0] }}','{{ method[0] }}','{{ response[0] }}','{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-description')">
                                         </div>                                       
                                     {% endif %}
 
@@ -120,9 +470,8 @@ title: Editor
                                             <tbody>
                                             {% for header in response[1].headers %} 
                                                 <tr>
-                                                    <td><input type="text" class="form-control" id="name" value="{{ header[0] }}"></td>
-                                                    <td><input type="text" class="form-control" id="type" value="{{ header[1].schema.type }}"></td>
-                                                    <td><input type="text" class="form-control" id="description" value="{{ header[1].schema.description }}"></td>
+                                                    <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-{{ header[0] }}" value="{{ header[0] }}" onchange="updateOperationResponseHeader('{{ path[0] }}','{{ method[0] }}','{{ response[0] }}','{{ header[0] }}','{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-{{ header[0] }}')"></td>
+                                                    <td><input type="text" class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-{{ header[0] }}-schema-type" value="{{ header[1].schema.type }}" onchange="updateOperationResponseHeaderSchemaType('{{ path[0] }}','{{ method[0] }}','{{ response[0] }}','{{ header[0] }}','{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-{{ header[0] }}-schema-type')"></td>
                                                 </tr>
                                             {% endfor %}  
                                             </tbody>
@@ -139,11 +488,20 @@ title: Editor
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            {% assign counter = 0 %}   
                                             {% for content in response[1].content %}
                                                 <tr>
                                                     <td><input type="text" class="form-control" id="name" value="{{ content[0] }}"></td>
-                                                    <td><input type="text" class="form-control" id="description" value="{{ content[1].schema['$ref'] | replace: '#/components/schemas/','' }}"></td>
+                                                    <td>
+                                                        <select class="form-control" id="{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-{{ content[0] }}" onchange="updateOperationResponseContent('{{ path[0] }}','{{ method[0] }}','{{ response[0] }}','{{ content[0] }}','{{ path[0] }}-{{ method[0] }}-{{ response[0] }}-{{ content[0] }}')">
+                                                            {% assign this_schema = content[1].schema['$ref'] | replace: '#/components/schemas/','' %}
+                                                            {% for schema in api.components.schemas %}
+                                                                <option value="{{ schema[0] }}"{% if this_schema == schema[0] %} selected{% endif %}>{{ schema[0] }}</option>"
+                                                            {% endfor %}  
+                                                        </select>                                                        
+                                                    </td>
                                                 </tr>
+                                                {% assign counter = counter | plus: 1 %} 
                                             {% endfor %}  
                                             </tbody>
                                         </table>                                                                          
@@ -172,7 +530,7 @@ title: Editor
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     <a name="requestBody-{{ requestBody[0] }}"></a>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ requestBody[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                        <input type="text" class="form-control" id="{{ requestBody[0] }}" value="{{ requestBody[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updateRequestBody('{{ requestBody[0] }}')">
                     </div>                     
                 </button>
                 </h2>
@@ -181,7 +539,7 @@ title: Editor
                     
                     <div class="mb-3">
                         <label for="response-description" class="form-label">Required:</label>
-                        <input type="email" class="form-control" id="response-description" placeholder="{{ requestBody[1].required }}">
+                        <input type="email" class="form-control" id="response-description" value="{{ requestBody[1].required }}">
                     </div>                      
 
                     {% if requestBody[1].content %}
@@ -197,7 +555,14 @@ title: Editor
                                 {% for content in requestBody[1].content %}
                                 <tr>
                                     <td><input type="text" class="form-control" id="type" value="{{ content[0] }}"></td>
-                                    <td><input type="text" class="form-control" id="description" value="{{ content[1].schema['$ref'] | replace: '#/components/schemas/','' }}"></td>
+                                    <td>
+                                        <select class="form-control" id="{{ requestBody[0] }}-{{ content[0] }}" onchange="updateRequestBodyItems('{{ requestBody[0] }}','{{ content[0] }}','{{ requestBody[0] }}-{{ content[0] }}')">
+                                            {% assign this_schema = content[1].schema['$ref'] | replace: '#/components/schemas/','' %}
+                                            {% for schema in api.components.schemas %}
+                                                <option value="{{ schema[0] }}"{% if this_schema == schema[0] %} selected{% endif %}>{{ schema[0] }}</option>"
+                                            {% endfor %}  
+                                        </select>                                          
+                                    </td>
                                 </tr>
                             {% endfor %}  
                             </tbody>
@@ -222,7 +587,7 @@ title: Editor
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     <a name="schema-{{ schema[0] }}"></a>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ schema[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;">
+                        <input type="text" class="form-control" id="{{ schema[0] }}" value="{{ schema[0] }}" style="font-size: 24px; font-weight: bold; width: 750px;" onchange="updateSchema('{{ schema[0] }}')">
                     </div>                         
                 </button>
                 </h2>
@@ -230,15 +595,20 @@ title: Editor
                 <div class="accordion-body">
 
                     <div class="mb-3">
-                        <label for="response-description" class="form-label">Type:</label>
-                        <input type="email" class="form-control" id="response-description" placeholder="{{ schema[1].type }}">
+                        <label for="{{ schema[0] }}-type" class="form-label">Type:</label>
+                        <input type="email" class="form-control" id="{{ schema[0] }}-type" value="{{ schema[1].type }}" onchange="updateSchemaType('{{ schema[0] }}','{{ schema[0] }}-type')">
                     </div> 
                     
                     {% if schema[1].items %}
                         <p><strong>Items:</strong></p>
                         <div class="mb-3">
                             <label for="response-description" class="form-label">Schema:</label>
-                            <input type="email" class="form-control" id="response-description" placeholder="{{ schema[1].items['$ref'] | replace: '#/components/schemas/','' }}">
+                            <select class="form-control" id="{{ schema[0] }}-items" onchange="updateSchemaItems('{{ schema[0] }}','{{ schema[0] }}-items')">
+                                {% assign this_schema = schema[1].items['$ref'] | replace: '#/components/schemas/','' %}
+                                {% for schema in api.components.schemas %}
+                                    <option value="{{ schema[0] }}"{% if this_schema == schema[0] %} selected{% endif %}>{{ schema[0] }}</option>"
+                                {% endfor %}  
+                            </select>                             
                         </div>                         
                     {% endif %}
 
@@ -256,8 +626,8 @@ title: Editor
                                 {% for property in schema[1].properties %}
                                 <tr>
                                     <td><input type="text" class="form-control" id="name" value="{{ property[0] }}"></td>
-                                    <td><input type="text" class="form-control" id="type" value="{{ property[1].type }}"></td>
-                                    <td><input type="text" class="form-control" id="description" value="{{ property[1].description }}"></td>
+                                    <td><input type="text" class="form-control" id="{{ schema[0] }}-{{ property[0] }}-type" value="{{ property[1].type }}" onchange="updateSchemaPropertySchemaType('{{ schema[0] }}','{{ property[0] }}','{{ schema[0] }}-{{ property[0] }}-type')"></td>
+                                    <td><input type="text" class="form-control" id="{{ schema[0] }}-{{ property[0] }}-description" value="{{ property[1].description }}" onchange="updateSchemaPropertyDescription('{{ schema[0] }}','{{ property[0] }}','{{ schema[0] }}-{{ property[0] }}-description')"></td>
                                 </tr>
                             {% endfor %}  
                             </tbody>
