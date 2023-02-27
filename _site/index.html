@@ -9,7 +9,7 @@
    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
    <meta name="generator" content="Hugo 0.88.1">
   
-   <title>Home</title>
+   <title>Editor</title>
    <link href="http://localhost:4000/assets/css/bootstrap.min.css" rel="stylesheet">
    <meta name="theme-color" content="#7952b3">
     <style>
@@ -91,12 +91,104 @@
 <main class="flex-shrink-0" style="margin-top: 60px;"><div class="container">
 
     
+    
+
+    <div class="row">
+        <script>
+            function changeToken(t){
+                Cookies.set('token',t)
+            }	
+            function viewOpenAPI(){
+            
+                if(document.getElementById('openapi').style.display == 'none'){
+                    document.getElementById('openapi').style.display = '';
+                }
+                else{
+                    document.getElementById('openapi').style.display = 'none';
+                }
+                
+            }			
+        </script>
+        <div class="col">				
+            <input type="text" width="100" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
+        </div>			
+        <div class="col">
+            <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
+        </div>	        					
+    </div>
+
+    <script>
+        var token = getUrlVar('token');	
+        if(token){
+            document.getElementById('token').value = token;		
+            changeToken(token);
+        }						
+
+        var stored_token = Cookies.get('token');
+        if(stored_token){
+            document.getElementById('token').value = stored_token;	
+        }
+
+        const base_url = 'https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging';
+        
+        function sendGET(path,method){
+
+            token = document.getElementById("token").value;	
+
+            var openapi = JSON.parse(document.getElementById('openapi').value);
+
+            var apply_path = path;
+            var parameters = openapi.paths[path][method].parameters;
+
+            for (var i = 0; i < parameters.length; i++) {
+                if(parameters[i].in == 'path'){
+                    var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                    apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                }            
+            }
+
+            const options = {
+                method: method,
+                headers: {
+                    "x-api-key": token
+                }
+            };	
+
+            fetch(base_url + apply_path,options)
+                .then(function(response) {
+                    if (!response.ok) {
+                        console.log('Error with Status Code: ' + response.status);
+                        return;
+                    }
+                    response.json().then(function(data) {	
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            html += '<a href="' + data[i].image + '" target="_blank"><img src="' + data[i].image + '" width="300" style="border: 1px solid #000; margin: 5px;"></a>';
+                        }
+                        document.getElementById('results').innerHTML = html;
+
+                    });
+                })
+                .catch(function(err) {
+                    console.log('Error: ' + err);
+            });
+
+            }                                     
+    </script>     
+
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}}}}</textarea>    
 
     <h1>Diagrams</h1>
     <p>This is of the diagrams API.</p>   
 
+    <script>
+        sendGET('/diagrams','get');
+    </script>
 
-    </div>    
+    <div id="results"></div>
+
+    </div>
 
 </div></main>
 

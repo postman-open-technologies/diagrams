@@ -50,7 +50,7 @@ exports.handler = vandium.generic()
        }
     }  
     
-    sql += " ORDER BY name";
+    sql += " ORDER BY id";
     sql += " LIMIT " + page + "," + limit;
     connection.query(sql, function (error, results, fields) {
 

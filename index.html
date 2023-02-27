@@ -1,17 +1,109 @@
 ---
 layout: default
-title: Home
+title: Editor
 ---
 
 
 <div class="container">
 
     {% assign api = site.data.api %}
+    {% assign openapi = site.data.api | jsonify %}
+
+    <div class="row">
+        <script>
+            function changeToken(t){
+                Cookies.set('token',t)
+            }	
+            function viewOpenAPI(){
+            
+                if(document.getElementById('openapi').style.display == 'none'){
+                    document.getElementById('openapi').style.display = '';
+                }
+                else{
+                    document.getElementById('openapi').style.display = 'none';
+                }
+                
+            }			
+        </script>
+        <div class="col">				
+            <input type="text" width="100" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
+        </div>			
+        <div class="col">
+            <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
+        </div>	        					
+    </div>
+
+    <script>
+        var token = getUrlVar('token');	
+        if(token){
+            document.getElementById('token').value = token;		
+            changeToken(token);
+        }						
+
+        var stored_token = Cookies.get('token');
+        if(stored_token){
+            document.getElementById('token').value = stored_token;	
+        }
+
+        const base_url = '{{ site.diagrams_base_url }}';
+        
+        function sendGET(path,method){
+
+            token = document.getElementById("token").value;	
+
+            var openapi = JSON.parse(document.getElementById('openapi').value);
+
+            var apply_path = path;
+            var parameters = openapi.paths[path][method].parameters;
+
+            for (var i = 0; i < parameters.length; i++) {
+                if(parameters[i].in == 'path'){
+                    var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                    apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                }            
+            }
+
+            const options = {
+                method: method,
+                headers: {
+                    "x-api-key": token
+                }
+            };	
+
+            fetch(base_url + apply_path,options)
+                .then(function(response) {
+                    if (!response.ok) {
+                        console.log('Error with Status Code: ' + response.status);
+                        return;
+                    }
+                    response.json().then(function(data) {	
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            html += '<a href="' + data[i].image + '" target="_blank"><img src="' + data[i].image + '" width="300" style="border: 1px solid #000; margin: 5px;"></a>';
+                        }
+                        document.getElementById('results').innerHTML = html;
+
+                    });
+                })
+                .catch(function(err) {
+                    console.log('Error: ' + err);
+            });
+
+            }                                     
+    </script>     
+
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{{ openapi }}</textarea>    
 
     <h1>{{ api.info.title }}</h1>
     <p>{{ api.info.description }}</p>   
 
+    <script>
+        sendGET('/diagrams','get');
+    </script>
 
-    </div>    
+    <div id="results"></div>
+
+    </div>
 
 </div>

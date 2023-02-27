@@ -197,13 +197,16 @@
                 var openapi = JSON.parse(document.getElementById('openapi').value);
 
                 var apply_path = path;
-                var parameters = openapi.paths[path][method].parameters;
 
-                for (var i = 0; i < parameters.length; i++) {
-                    if(parameters[i].in == 'path'){
-                        var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
-                        apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                    }            
+                if(openapi.paths[path][method].parameters){
+                    var parameters = openapi.paths[path][method].parameters;
+
+                    for (var i = 0; i < parameters.length; i++) {
+                        if(parameters[i].in == 'path'){
+                            var param_value = document.getElementById(path + '-' + method + '-parameters-' + parameters[i].name).value;
+                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
+                        }            
+                    }
                 }
 
                 var body = document.getElementById(path + '-' + method + '-body').value;

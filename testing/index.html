@@ -7,6 +7,7 @@ title: Editor
 <div class="container">
 
     {% assign api = site.data.api %}
+    {% assign openapi = site.data.api | jsonify %}
 
     <div class="row">
         <script>
@@ -75,9 +76,7 @@ title: Editor
         function sendGET(path,method){
 
             token = document.getElementById("token").value;	
-
             var openapi = JSON.parse(document.getElementById('openapi').value);
-
             var apply_path = path;
             var parameters = openapi.paths[path][method].parameters;
 
