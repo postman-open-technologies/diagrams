@@ -3,8 +3,8 @@ description: This is a diagram API.
 
 image: https://postman-toolboxes2.s3.amazonaws.com/assets/api.png
 
+url: /diagrams
 #url: /
-url: /
 
 email: kin@postman.com
 
