@@ -72,6 +72,45 @@ title: Editor
     <h1>Pipeline</h1>
     <p>This is GitHub actions pipeline generated from the underlying YAML OpenAPI contract.</p>     
 
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Operation</th>
+            <th scope="col">Contract Test</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for path in api.paths %}                    
+            {% for method in path[1] %}
+
+                {% if method[0] != 'options' %}
+                    {% if method[0] != 'delete' %}
+
+                    {% if method[0] == 'get' %}
+                        {% assign method_color = "#228B22" %}
+                    {% elsif method[0] == 'post' %}
+                        {% assign method_color = "#FF5733" %}
+                    {% elsif method[0] == 'put' %}
+                        {% assign method_color = "#FFC300" %} 
+                    {% elsif method[0] == 'delete' %}
+                        {% assign method_color = "#C70039" %}                                                                                     
+                    {% elsif method[0] == 'options' %}
+                        {% assign method_color = "#0006FF" %}                             
+                    {% endif %}
+
+                    <tr>
+                        <td><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</td>
+                        <td id="{{ path[0] }}-{{ method[0] }}-results" width="10%" align=""center"><input type="checkbox" name="test" value="1"></td>
+                    </tr>                            
+
+                    {% endif %} 
+                {% endif %}  
+
+            {% endfor %}  
+        {% endfor %}
+        </tbody>
+    </table> 
+
 <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px;">      
 name: Diagrams  
 on: [push]
@@ -109,46 +148,7 @@ jobs:
             function_name: m-s-{{ path_slug }}-{{ m }}
             zip_file: m-s-{{ path_slug }}-{{ m }}.zip                        
         {% endif %}{% endfor %}{% endfor %}  
-</textarea> 
-
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Operation</th>
-            <th scope="col">Results</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for path in api.paths %}                    
-            {% for method in path[1] %}
-
-                {% if method[0] != 'options' %}
-                    {% if method[0] != 'delete' %}
-
-                    {% if method[0] == 'get' %}
-                        {% assign method_color = "#228B22" %}
-                    {% elsif method[0] == 'post' %}
-                        {% assign method_color = "#FF5733" %}
-                    {% elsif method[0] == 'put' %}
-                        {% assign method_color = "#FFC300" %} 
-                    {% elsif method[0] == 'delete' %}
-                        {% assign method_color = "#C70039" %}                                                                                     
-                    {% elsif method[0] == 'options' %}
-                        {% assign method_color = "#0006FF" %}                             
-                    {% endif %}
-
-                    <tr>
-                        <td><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</td>
-                        <td id="{{ path[0] }}-{{ method[0] }}-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                    {% endif %} 
-                {% endif %}  
-
-            {% endfor %}  
-        {% endfor %}
-        </tbody>
-    </table>        
+</textarea>        
 
     </div>
 

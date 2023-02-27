@@ -67,6 +67,9 @@
             <a class="nav-link active" aria-current="page" href="http://localhost:4000/editor/">Editor</a>
           </li> 
           <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://localhost:4000/linting/">Linting</a>
+          </li>           
+          <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="http://localhost:4000/client/">Client</a>
           </li>  
           <li class="nav-item">
@@ -152,6 +155,96 @@
 
     <h1>Pipeline</h1>
     <p>This is GitHub actions pipeline generated from the underlying YAML OpenAPI contract.</p>     
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Operation</th>
+            <th scope="col">Contract Test</th>
+        </tr>
+        </thead>
+        <tbody>
+                            
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#228B22;">GET</span> Diagrams</td>
+                        <td id="/diagrams-get-results" width="10%" align=""center"><input type="checkbox" name="test" value="1"></td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#FF5733;">POST</span> Diagram</td>
+                        <td id="/diagrams-post-results" width="10%" align=""center"><input type="checkbox" name="test" value="1"></td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                  
+
+              
+                            
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#228B22;">GET</span> Diagram</td>
+                        <td id="/diagrams/{diagram_id}-get-results" width="10%" align=""center"><input type="checkbox" name="test" value="1"></td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                    
+
+                    
+
+                    <tr>
+                        <td><span style="color:#FFC300;">PUT</span> Diagram</td>
+                        <td id="/diagrams/{diagram_id}-put-results" width="10%" align=""center"><input type="checkbox" name="test" value="1"></td>
+                    </tr>                            
+
+                     
+                  
+
+            
+
+                
+                     
+                  
+
+            
+
+                  
+
+              
+        
+        </tbody>
+    </table> 
 
 <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px;">      
 name: Diagrams  
@@ -242,97 +335,7 @@ jobs:
             function_name: m-s-diagrams-diagram-d
             zip_file: m-s-diagrams-diagram-d.zip                        
           
-</textarea> 
-
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Operation</th>
-            <th scope="col">Results</th>
-        </tr>
-        </thead>
-        <tbody>
-                            
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#228B22;">GET</span> Diagrams</td>
-                        <td id="/diagrams-get-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#FF5733;">POST</span> Diagram</td>
-                        <td id="/diagrams-post-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                  
-
-              
-                            
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#228B22;">GET</span> Diagram</td>
-                        <td id="/diagrams/{diagram_id}-get-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#FFC300;">PUT</span> Diagram</td>
-                        <td id="/diagrams/{diagram_id}-put-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                     
-                  
-
-            
-
-                  
-
-              
-        
-        </tbody>
-    </table>        
+</textarea>        
 
     </div>
 

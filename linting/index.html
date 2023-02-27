@@ -1,96 +1,12 @@
+---
+layout: default
+title: Editor
+---
 
-<!doctype html>
-<html lang="en" class="h-100">
-<head>
 
-   <meta charset="utf-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="">
-   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-   <meta name="generator" content="Hugo 0.88.1">
-  
-   <title>Editor</title>
-   <link href="http://localhost:4000/assets/css/bootstrap.min.css" rel="stylesheet">
-   <meta name="theme-color" content="#7952b3">
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
+<div class="container">
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <!-- Cookies.js - http://github.com/ScottHamper/Cookies -->
-    <script src="http://localhost:4000/assets/js/cookies.js"></script>
-    <script src="http://localhost:4000/assets/js/js-yaml.min.js"></script>
-    <script src="http://localhost:4000/assets/js/ajv7.min.js"></script>
-
-    <script>
-
-        function getUrlVar(key){
-            var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
-            return result && unescape(result[1]) || "";
-        }
-
-    </script>
-
-  </head>
-  <body class="d-flex flex-column h-100">
-    
-<header>
-  <!-- Fixed navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="http://localhost:4000/">Diagrams</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/docs/">Docs</a>
-          </li>           
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/editor/">Editor</a>
-          </li> 
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/linting/">Linting</a>
-          </li>           
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/client/">Client</a>
-          </li>  
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/testing/">Contract Testing</a>
-          </li>  
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://localhost:4000/pipeline/">Pipeline</a>
-          </li>                                                                                                         
-        </ul>
-        <form class="d-flex">
-          <!--<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>-->
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
-
-<main class="flex-shrink-0" style="margin-top: 60px;"><div class="container">
-
-    
+    {% assign api = site.data.api %}
 
     <div class="row">
         <script>
@@ -125,8 +41,8 @@
         </div>	        					
     </div>
 
-    <h1>Contract Testing</h1>
-    <p>This is HTML contract testing generated from the underlying YAML OpenAPI contract.</p>   
+    <h1>OpenAPI Linting</h1>
+    <p>This is OpenAPI linting generated from the underlying YAML OpenAPI contract.</p>   
 
     <script>
 
@@ -154,7 +70,7 @@
             document.getElementById('gtoken').value = stored_gtoken;	
         }	
 
-        const base_url = 'https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging';
+        const base_url = '{{ site.diagrams_base_url }}';
         
         function sendGET(path,method){
 
@@ -386,68 +302,30 @@
                 }                                     
     </script>     
 
-    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;"></textarea>    
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{{ openapi }}</textarea>    
 
-    <h1>Diagrams</h1>
-    <p>This is of the diagrams API.</p>   
+    <h1>{{ api.info.title }}</h1>
+    <p>{{ api.info.description }}</p>   
 
     <script>        
 
         function testAll(){
-                            
-            
-                
+        {% for path in api.paths %}                    
+            {% for method in path[1] %}
+                {% if method[0] != 'options' %}
                     
-                    
-                        sendGET('/diagrams','get');
-                                              
+                    {% if method[0] == 'get' %}
+                        sendGET('{{ path[0] }}','{{ method[0] }}');
+                    {% elsif method[0] == 'post' %}
+                        sendPOST('{{ path[0] }}','{{ method[0] }}');
+                    {% elsif method[0] == 'put' %}
+                        sendPUT('{{ path[0] }}','{{ method[0] }}');                                                                                             
+                    {% endif %}                          
 
-                  
+                {% endif %}  
 
-            
-                
-                    
-                    
-                        sendPOST('/diagrams','post');
-                                              
-
-                  
-
-            
-                  
-
-              
-                            
-            
-                
-                    
-                    
-                        sendGET('/diagrams/{diagram_id}','get');
-                                              
-
-                  
-
-            
-                
-                    
-                    
-                        sendPUT('/diagrams/{diagram_id}','put');                                                                                             
-                                              
-
-                  
-
-            
-                
-                    
-                                              
-
-                  
-
-            
-                  
-
-              
-          
+            {% endfor %}  
+        {% endfor %}  
         } 
     </script> 
 
@@ -459,99 +337,37 @@
         </tr>
         </thead>
         <tbody>
-                            
-            
+        {% for path in api.paths %}                    
+            {% for method in path[1] %}
 
-                
-                    
+                {% if method[0] != 'options' %}
+                    {% if method[0] != 'delete' %}
 
-                    
-
-                    <tr>
-                        <td><span style="color:#228B22;">GET</span> Diagrams</td>
-                        <td id="/diagrams-get-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                    
-
-                    
+                    {% if method[0] == 'get' %}
+                        {% assign method_color = "#228B22" %}
+                    {% elsif method[0] == 'post' %}
+                        {% assign method_color = "#FF5733" %}
+                    {% elsif method[0] == 'put' %}
+                        {% assign method_color = "#FFC300" %} 
+                    {% elsif method[0] == 'delete' %}
+                        {% assign method_color = "#C70039" %}                                                                                     
+                    {% elsif method[0] == 'options' %}
+                        {% assign method_color = "#0006FF" %}                             
+                    {% endif %}
 
                     <tr>
-                        <td><span style="color:#FF5733;">POST</span> Diagram</td>
-                        <td id="/diagrams-post-results" width="10%">RESULTS</td>
+                        <td><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</td>
+                        <td id="{{ path[0] }}-{{ method[0] }}-results" width="10%">RESULTS</td>
                     </tr>                            
 
-                     
-                  
+                    {% endif %} 
+                {% endif %}  
 
-            
-
-                  
-
-              
-                            
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#228B22;">GET</span> Diagram</td>
-                        <td id="/diagrams/{diagram_id}-get-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#FFC300;">PUT</span> Diagram</td>
-                        <td id="/diagrams/{diagram_id}-put-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                     
-                  
-
-            
-
-                  
-
-              
-        
+            {% endfor %}  
+        {% endfor %}
         </tbody>
     </table>        
 
     </div>
 
-</div></main>
-
-<footer class="footer mt-auto py-3 bg-light">
-  <div class="container">
-    <span class="text-muted">Footer</span>
-  </div>
-</footer>
-
-<script src="http://localhost:4000/assets/js/bootstrap.js"></script>    
-
-  </body>
-</html>
+</div>
