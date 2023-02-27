@@ -3,8 +3,8 @@ description: This is a diagram API.
 
 image: https://postman-toolboxes2.s3.amazonaws.com/assets/api.png
 
-#url: /diagrams
-url: /
+url: /diagrams
+#url: /
 
 email: kin@postman.com
 
@@ -16,3 +16,4 @@ version:      1.1.1
 markdown:     kramdown
 
 diagrams_base_url: https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging
+openapi_linting_url: https://api.linting.org/linter

@@ -91,14 +91,12 @@
 <main class="flex-shrink-0" style="margin-top: 60px;"><div class="container">
 
     
+    
 
     <div class="row">
         <script>
             function changeToken(t){
                 Cookies.set('token',t)
-            }
-            function changeGToken(t){
-                Cookies.set('gtoken',t)
             }	
             function viewOpenAPI(){
             
@@ -113,13 +111,7 @@
         </script>
         <div class="col">				
             <input type="text" width="100" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
-        </div>
-        <div class="col">				
-            <input type="text" width="100" class="form-control" id="gtoken" name="gtoken" value="" placeholder="Github Token" onchange="changeGToken();"><br>
-        </div>			
-        <div class="col">
-            <input type="button" class="btn btn-success" name="show" value="Test All" onclick="testAll();">
-        </div>	
+        </div>		
         <div class="col">
             <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
         </div>	        					
@@ -136,70 +128,31 @@
         if(token){
             document.getElementById('token').value = token;		
             changeToken(token);
-        }
-
-        var gtoken = getUrlVar('gtoken');	
-        if(gtoken){
-            document.getElementById('gtoken').value = gtoken;		
-            changeGToken(gtoken);
-        }							
+        }						
 
         var stored_token = Cookies.get('token');
         if(stored_token){
             document.getElementById('token').value = stored_token;	
         }
 
-        var stored_gtoken = Cookies.get('gtoken');
-        if(stored_gtoken){
-            document.getElementById('gtoken').value = stored_gtoken;	
-        }	
-
-        const base_url = 'https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging';
+        const rules_url = 'https://raw.githubusercontent.com/postman-open-technologies/diagrams/main/_data/rules.yml';
+        const base_url = 'https://api.linting.org/linter?rulesUrl=' + rules_url;
         
-        function sendGET(path,method){
+        function lintOpenAPI(){
 
             token = document.getElementById("token").value;	
 
-            var openapi = JSON.parse(document.getElementById('openapi').value);
-
-            var apply_path = path;
-            var parameters = openapi.paths[path][method].parameters;
-
-            if(openapi.paths[path][method].parameters){
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = parameters[i].example;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-                }
-
-            // Get Schema
-            var schema_name = openapi.paths[path][method].responses['200'].content['application/json'].schema['$ref'];    
-            schema_name = schema_name.replace('#/components/schemas/','');
-            var schema = openapi.components.schemas[schema_name];
-
-            // If array then get schema
-            if(schema.items){
-                var schema_object_name = schema.items['$ref'];
-                schema_object_name = schema_object_name.replace('#/components/schemas/','');
-                var schema_items = openapi.components.schemas[schema_object_name];
-                delete schema_items.example;
-                schema.items = schema_items;
-            }
-
-            console.log(schema);
+            var openapi = document.getElementById('openapi').value;
 
             const options = {
-                method: method,
+                method: "post",
                 headers: {
-                    "x-api-key": token
-                }
+                    "Content-Type": "application/json"
+                },
+                body: openapi
             };	
 
-            fetch(base_url + apply_path,options)
+            fetch(base_url,options)
                 .then(function(response) {
                     if (!response.ok) {
                         console.log('Error with Status Code: ' + response.status);
@@ -207,19 +160,40 @@
                     }
                     response.json().then(function(data) {	
                         
-                        delete schema.example;
-                        //schema['$id'] = "http://example.com/data";
-                        //console.log("data: " + data);
-                        let validate = ajv.compile(schema)
-                        let valid = validate(data);
-                        console.log("valid: " + valid);
+                        results = '<thead>';
+                        results += '<tr>';
+                        results += '<th scope="col">Code</th>';
+                        results += '<th scope="col">Status</th>';
+                        results += '<th scope="col">Message</th>';
+                        results += '<th scope="col">Failure</th>';
+                        results += '</tr>';
+                        results += '</thead>';
+                        results += '<tbody>';
+                        
+                        for (var i = 0; i < data.length; i++) {    
 
-                        var results = '<img src="/images/icons/red-icon.png" width="50">';
-                        if(valid){
-                            results = '<img src="/images/icons/green-icon.png" width="50">';
+                            results += '<tr>';
+                            results += '<td>' + data[i].code + '</td>';
+                            
+                            if(data[i].status == 'failed'){
+                                results += '<td><img src="/images/icons/red-icon.png" width="35"></td>';
+                            }
+                            else{
+                                results += '<td><img src="/images/icons/green-icon.png" width="35"></td>';
+                            }
+                            results += '<td>' + data[i].message + '</td>';
+                            if(data[i].failure){
+                                results += '<td>' + data[i].failure.message + '</td>';
+                            }
+                            else{
+                                results += '<td></td>';
+                            }
+                            results += '</tr>';
                         }
-                        //document.getElementById(path + '-' + method + '-results').innerHTML = JSON.stringify(data, null, 2) + '<br><br>' + JSON.stringify(schema, null, 2) + '<br><br>' + valid;
-                        document.getElementById(path + '-' + method + '-results').innerHTML = results;
+
+                        results += '</tbody>';
+
+                        document.getElementById('results').innerHTML = results;
                         
                     });
                 })
@@ -228,317 +202,25 @@
             });
 
             }   
-            
-            function sendPOST(path,method){
-
-                token = document.getElementById("token").value;	
-
-                var openapi = JSON.parse(document.getElementById('openapi').value);
-
-                var apply_path = path;
-                if(openapi.paths[path][method].parameters){
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = parameters[i].example;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-                }
-
-                var body_schema = openapi.paths[path][method].requestBody['$ref'];
-                body_schema = body_schema.replace('#/components/requestBodies/','');
-                var body = openapi.components.requestBodies[body_schema].content['application/json'].example;
-                //console.log(body);
-
-                // Get Schema
-                var schema_name = openapi.paths[path][method].responses['201'].content['application/json'].schema['$ref'];    
-                schema_name = schema_name.replace('#/components/schemas/','');
-                var schema = openapi.components.schemas[schema_name];
-
-                // If array then get schema
-                if(schema.items){
-                    var schema_object_name = schema.items['$ref'];
-                    schema_object_name = schema_object_name.replace('#/components/schemas/','');
-                    var schema_items = openapi.components.schemas[schema_object_name];
-                    delete schema_items.example;
-                    schema.items = schema_items;
-                }
-
-                console.log(schema);
-
-                const options = {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": token
-                    },
-                    body: JSON.stringify(body)
-                };	
-
-                fetch(base_url + apply_path,options)
-                    .then(function(response) {
-                        if (!response.ok) {
-                            console.log('Error with Status Code: ' + response.status);
-                            return;
-                        }
-                        response.json().then(function(data) {
-                            
-                            delete schema.example;
-                            //console.log("data: " + data);
-                            let validate = ajv.compile(schema)
-                            let valid = validate(data);
-                            console.log("valid: " + valid);                            
-
-                            var results = '<img src="/images/icons/red-icon.png" width="50">';
-                            if(valid){
-                                results = '<img src="/images/icons/green-icon.png" width="50">';
-                            }
-                            //document.getElementById(path + '-' + method + '-results').innerHTML = JSON.stringify(data, null, 2) + '<br><br>' + JSON.stringify(schema, null, 2) + '<br><br>' + valid;
-                            document.getElementById(path + '-' + method + '-results').innerHTML = results;
-
-                        });
-                    })
-                    .catch(function(err) {
-                        console.log('Error: ' + err);
-                });
-
-                }  
-                
-            function sendPUT(path,method){
-
-                token = document.getElementById("token").value;	
-
-                var openapi = JSON.parse(document.getElementById('openapi').value);
-
-                var apply_path = path;
-                var parameters = openapi.paths[path][method].parameters;
-
-                if(openapi.paths[path][method].parameters){
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = parameters[i].example;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-                }
-
-                var body_schema = openapi.paths[path][method].requestBody['$ref'];
-                body_schema = body_schema.replace('#/components/requestBodies/','');
-                if(openapi.components.requestBodies[body_schema].content){
-                    var body = openapi.components.requestBodies[body_schema].content['application/json'].example;
-                }
-                else{
-                    var body = {};
-                }
-                console.log(body);
-
-                // Get Schema
-                if(openapi.paths[path][method].responses['204'].content){
-                    var schema_name = openapi.paths[path][method].responses['204'].content['application/json'].schema['$ref'];    
-                    schema_name = schema_name.replace('#/components/schemas/','');
-                    var schema = openapi.components.schemas[schema_name];
-                }
-                else{
-                    var schema = {};
-                }                
-
-                // If array then get schema
-                if(schema.items){
-                    var schema_object_name = schema.items['$ref'];
-                    schema_object_name = schema_object_name.replace('#/components/schemas/','');
-                    var schema_items = openapi.components.schemas[schema_object_name];
-                    delete schema_items.example;
-                    schema.items = schema_items;
-                }
-
-                console.log(schema);                
-
-                const options = {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": token
-                    },
-                    body: JSON.stringify(body)
-                };		
-
-                fetch(base_url + apply_path,options)
-                    .then(function(response) {
-                        if (!response.ok) {
-                            console.log('Error with Status Code: ' + response.status);
-                            return;
-                        }
-                        response.text().then(function(data) {	
-
-                            var results = '<img src="/images/icons/green-icon.png" width="50">';
-                            document.getElementById(path + '-' + method + '-results').innerHTML = results;
-
-                        });                        
-                    })
-                    .catch(function(err) {
-                        console.log('Error: ' + err);
-                });
-
-                }                                     
+                                           
     </script>     
 
-    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;"></textarea>    
-
-    <h1>Diagrams</h1>
-    <p>This is of the diagrams API.</p>   
+    <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{"openapi":"3.0.0","info":{"title":"Diagrams","description":"This is of the diagrams API.","version":"v1"},"servers":[{"url":"https://pt5fqvxp05.execute-api.us-west-1.amazonaws.com/staging"}],"paths":{"/diagrams":{"get":{"summary":"Diagrams","description":"Returns all of the diagrams.","parameters":[{"name":"limit","in":"query","required":false,"example":25,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"example":0,"schema":{"type":"string"}},{"name":"search","in":"query","required":false,"example":"","schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagrams"}}}}},"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.querystring.page":"method.request.querystring.page","integration.request.querystring.limit":"method.request.querystring.limit","integration.request.querystring.search":"method.request.querystring.search","integration.request.querystring.tags":"method.request.querystring.tags"},"requestTemplates":{"application/json":"{\n    \"page\" : \"$input.params('page')\",\n    \"limit\" : \"$input.params('limit')\",\n    \"search\" : \"$input.params('search')\",\n    \"tags\" : \"$input.params('tags')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"post":{"summary":"Diagram","description":"Adds a diagram.","requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"201":{"description":"201 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-po/invocations","responses":{"default":{"statusCode":"201","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"passthroughBehavior":"when_no_match","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,POST'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}},"/diagrams/{diagram_id}":{"get":{"summary":"Diagram","description":"Return and individual diagrams.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}},"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-g/invocations","responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"put":{"summary":"Diagram","description":"Updates a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"requestBody":{"$ref":"#/components/requestBodies/Diagram"},"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-pu/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\",\n    \"body\" : $input.json('$') \n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"delete":{"summary":"Diagram","description":"Deltes a diagram.","parameters":[{"name":"diagram_id","in":"path","required":true,"example":857,"schema":{"type":"string"}}],"responses":{"204":{"description":"204 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}}}}},"security":[{"api_key":[]}],"x-amazon-apigateway-integration":{"httpMethod":"POST","uri":"arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:780401591112:function:m-s-diagrams-diagram-d/invocations","responses":{"default":{"statusCode":"204","responseParameters":{"method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestParameters":{"integration.request.path.diagram_id":"method.request.path.diagram_id"},"requestTemplates":{"application/json":"{\n    \"diagram_id\" : \"$input.params('diagram_id')\"\n}"},"passthroughBehavior":"when_no_templates","contentHandling":"CONVERT_TO_TEXT","type":"aws"}},"options":{"parameters":[{"name":"diagram_id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"200 response","headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"}},"Access-Control-Allow-Methods":{"schema":{"type":"string"}},"Access-Control-Allow-Headers":{"schema":{"type":"string"}}}}},"x-amazon-apigateway-integration":{"responses":{"default":{"statusCode":"200","responseParameters":{"method.response.header.Access-Control-Allow-Methods":"'GET,OPTIONS,DELETE,PUT'","method.response.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'","method.response.header.Access-Control-Allow-Origin":"'*'"}}},"requestTemplates":{"application/json":"{\"statusCode\": 200}"},"passthroughBehavior":"when_no_match","type":"mock"}}}},"components":{"requestBodies":{"Diagram":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Diagram"},"example":{"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}},"required":true}},"securitySchemes":{"api_key":{"type":"apiKey","name":"x-api-key","in":"header"}},"schemas":{"Diagrams":{"type":"array","items":{"$ref":"#/components/schemas/Diagram"},"example":[{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}]},"Diagram":{"type":"object","required":["name"],"properties":{"name":{"type":"string"},"version":{"type":"string"},"description":{"type":"string"},"url":{"type":"string"}},"example":{"id":857,"name":"Example Image","description":"The description.","url":"https://example.com/","image":"https://example.com/image.jpeg"}}}}}</textarea>    
 
     <script>        
-
-        function testAll(){
-                            
-            
-                
-                    
-                    
-                        sendGET('/diagrams','get');
-                                              
-
-                  
-
-            
-                
-                    
-                    
-                        sendPOST('/diagrams','post');
-                                              
-
-                  
-
-            
-                  
-
-              
-                            
-            
-                
-                    
-                    
-                        sendGET('/diagrams/{diagram_id}','get');
-                                              
-
-                  
-
-            
-                
-                    
-                    
-                        sendPUT('/diagrams/{diagram_id}','put');                                                                                             
-                                              
-
-                  
-
-            
-                
-                    
-                                              
-
-                  
-
-            
-                  
-
-              
-          
-        } 
+        lintOpenAPI();
     </script> 
 
-    <table class="table">
-        <thead>
+    <table class="table" id="results">
         <tr>
-            <th scope="col">Operation</th>
-            <th scope="col">Results</th>
+            <td align="center"><br></td>
+        </tr>        
+        <tr>
+            <td align="center"><span style="color:red; font-size: 18px; font-weight: bold;">Linting OpenAPI...</span></td>
         </tr>
-        </thead>
-        <tbody>
-                            
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#228B22;">GET</span> Diagrams</td>
-                        <td id="/diagrams-get-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#FF5733;">POST</span> Diagram</td>
-                        <td id="/diagrams-post-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                  
-
-              
-                            
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#228B22;">GET</span> Diagram</td>
-                        <td id="/diagrams/{diagram_id}-get-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                    
-
-                    
-
-                    <tr>
-                        <td><span style="color:#FFC300;">PUT</span> Diagram</td>
-                        <td id="/diagrams/{diagram_id}-put-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                     
-                  
-
-            
-
-                
-                     
-                  
-
-            
-
-                  
-
-              
-        
-        </tbody>
+        <tr>
+            <td align="center"><br></td>
+        </tr>          
     </table>        
 
     </div>

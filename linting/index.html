@@ -7,14 +7,12 @@ title: Editor
 <div class="container">
 
     {% assign api = site.data.api %}
+    {% assign openapi = site.data.api | jsonify %}
 
     <div class="row">
         <script>
             function changeToken(t){
                 Cookies.set('token',t)
-            }
-            function changeGToken(t){
-                Cookies.set('gtoken',t)
             }	
             function viewOpenAPI(){
             
@@ -29,13 +27,7 @@ title: Editor
         </script>
         <div class="col">				
             <input type="text" width="100" class="form-control" id="token" name="token" value="" placeholder="API Token" onchange="changeToken();"><br>
-        </div>
-        <div class="col">				
-            <input type="text" width="100" class="form-control" id="gtoken" name="gtoken" value="" placeholder="Github Token" onchange="changeGToken();"><br>
-        </div>			
-        <div class="col">
-            <input type="button" class="btn btn-success" name="show" value="Test All" onclick="testAll();">
-        </div>	
+        </div>		
         <div class="col">
             <input type="button" class="btn btn-success" name="show" value="View OpenAPI" onclick="viewOpenAPI();">
         </div>	        					
@@ -52,70 +44,31 @@ title: Editor
         if(token){
             document.getElementById('token').value = token;		
             changeToken(token);
-        }
-
-        var gtoken = getUrlVar('gtoken');	
-        if(gtoken){
-            document.getElementById('gtoken').value = gtoken;		
-            changeGToken(gtoken);
-        }							
+        }						
 
         var stored_token = Cookies.get('token');
         if(stored_token){
             document.getElementById('token').value = stored_token;	
         }
 
-        var stored_gtoken = Cookies.get('gtoken');
-        if(stored_gtoken){
-            document.getElementById('gtoken').value = stored_gtoken;	
-        }	
-
-        const base_url = '{{ site.diagrams_base_url }}';
+        const rules_url = 'https://raw.githubusercontent.com/postman-open-technologies/diagrams/main/_data/rules.yml';
+        const base_url = '{{ site.openapi_linting_url }}?rulesUrl=' + rules_url;
         
-        function sendGET(path,method){
+        function lintOpenAPI(){
 
             token = document.getElementById("token").value;	
 
-            var openapi = JSON.parse(document.getElementById('openapi').value);
-
-            var apply_path = path;
-            var parameters = openapi.paths[path][method].parameters;
-
-            if(openapi.paths[path][method].parameters){
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = parameters[i].example;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-                }
-
-            // Get Schema
-            var schema_name = openapi.paths[path][method].responses['200'].content['application/json'].schema['$ref'];    
-            schema_name = schema_name.replace('#/components/schemas/','');
-            var schema = openapi.components.schemas[schema_name];
-
-            // If array then get schema
-            if(schema.items){
-                var schema_object_name = schema.items['$ref'];
-                schema_object_name = schema_object_name.replace('#/components/schemas/','');
-                var schema_items = openapi.components.schemas[schema_object_name];
-                delete schema_items.example;
-                schema.items = schema_items;
-            }
-
-            console.log(schema);
+            var openapi = document.getElementById('openapi').value;
 
             const options = {
-                method: method,
+                method: "post",
                 headers: {
-                    "x-api-key": token
-                }
+                    "Content-Type": "application/json"
+                },
+                body: openapi
             };	
 
-            fetch(base_url + apply_path,options)
+            fetch(base_url,options)
                 .then(function(response) {
                     if (!response.ok) {
                         console.log('Error with Status Code: ' + response.status);
@@ -123,19 +76,40 @@ title: Editor
                     }
                     response.json().then(function(data) {	
                         
-                        delete schema.example;
-                        //schema['$id'] = "http://example.com/data";
-                        //console.log("data: " + data);
-                        let validate = ajv.compile(schema)
-                        let valid = validate(data);
-                        console.log("valid: " + valid);
+                        results = '<thead>';
+                        results += '<tr>';
+                        results += '<th scope="col">Code</th>';
+                        results += '<th scope="col">Status</th>';
+                        results += '<th scope="col">Message</th>';
+                        results += '<th scope="col">Failure</th>';
+                        results += '</tr>';
+                        results += '</thead>';
+                        results += '<tbody>';
+                        
+                        for (var i = 0; i < data.length; i++) {    
 
-                        var results = '<img src="/images/icons/red-icon.png" width="50">';
-                        if(valid){
-                            results = '<img src="/images/icons/green-icon.png" width="50">';
+                            results += '<tr>';
+                            results += '<td>' + data[i].code + '</td>';
+                            
+                            if(data[i].status == 'failed'){
+                                results += '<td><img src="/images/icons/red-icon.png" width="35"></td>';
+                            }
+                            else{
+                                results += '<td><img src="/images/icons/green-icon.png" width="35"></td>';
+                            }
+                            results += '<td>' + data[i].message + '</td>';
+                            if(data[i].failure){
+                                results += '<td>' + data[i].failure.message + '</td>';
+                            }
+                            else{
+                                results += '<td></td>';
+                            }
+                            results += '</tr>';
                         }
-                        //document.getElementById(path + '-' + method + '-results').innerHTML = JSON.stringify(data, null, 2) + '<br><br>' + JSON.stringify(schema, null, 2) + '<br><br>' + valid;
-                        document.getElementById(path + '-' + method + '-results').innerHTML = results;
+
+                        results += '</tbody>';
+
+                        document.getElementById('results').innerHTML = results;
                         
                     });
                 })
@@ -144,228 +118,25 @@ title: Editor
             });
 
             }   
-            
-            function sendPOST(path,method){
-
-                token = document.getElementById("token").value;	
-
-                var openapi = JSON.parse(document.getElementById('openapi').value);
-
-                var apply_path = path;
-                if(openapi.paths[path][method].parameters){
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = parameters[i].example;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-                }
-
-                var body_schema = openapi.paths[path][method].requestBody['$ref'];
-                body_schema = body_schema.replace('#/components/requestBodies/','');
-                var body = openapi.components.requestBodies[body_schema].content['application/json'].example;
-                //console.log(body);
-
-                // Get Schema
-                var schema_name = openapi.paths[path][method].responses['201'].content['application/json'].schema['$ref'];    
-                schema_name = schema_name.replace('#/components/schemas/','');
-                var schema = openapi.components.schemas[schema_name];
-
-                // If array then get schema
-                if(schema.items){
-                    var schema_object_name = schema.items['$ref'];
-                    schema_object_name = schema_object_name.replace('#/components/schemas/','');
-                    var schema_items = openapi.components.schemas[schema_object_name];
-                    delete schema_items.example;
-                    schema.items = schema_items;
-                }
-
-                console.log(schema);
-
-                const options = {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": token
-                    },
-                    body: JSON.stringify(body)
-                };	
-
-                fetch(base_url + apply_path,options)
-                    .then(function(response) {
-                        if (!response.ok) {
-                            console.log('Error with Status Code: ' + response.status);
-                            return;
-                        }
-                        response.json().then(function(data) {
-                            
-                            delete schema.example;
-                            //console.log("data: " + data);
-                            let validate = ajv.compile(schema)
-                            let valid = validate(data);
-                            console.log("valid: " + valid);                            
-
-                            var results = '<img src="/images/icons/red-icon.png" width="50">';
-                            if(valid){
-                                results = '<img src="/images/icons/green-icon.png" width="50">';
-                            }
-                            //document.getElementById(path + '-' + method + '-results').innerHTML = JSON.stringify(data, null, 2) + '<br><br>' + JSON.stringify(schema, null, 2) + '<br><br>' + valid;
-                            document.getElementById(path + '-' + method + '-results').innerHTML = results;
-
-                        });
-                    })
-                    .catch(function(err) {
-                        console.log('Error: ' + err);
-                });
-
-                }  
-                
-            function sendPUT(path,method){
-
-                token = document.getElementById("token").value;	
-
-                var openapi = JSON.parse(document.getElementById('openapi').value);
-
-                var apply_path = path;
-                var parameters = openapi.paths[path][method].parameters;
-
-                if(openapi.paths[path][method].parameters){
-                    var parameters = openapi.paths[path][method].parameters;
-
-                    for (var i = 0; i < parameters.length; i++) {
-                        if(parameters[i].in == 'path'){
-                            var param_value = parameters[i].example;
-                            apply_path = apply_path.replace('{' + parameters[i].name + '}',param_value);
-                        }            
-                    }
-                }
-
-                var body_schema = openapi.paths[path][method].requestBody['$ref'];
-                body_schema = body_schema.replace('#/components/requestBodies/','');
-                if(openapi.components.requestBodies[body_schema].content){
-                    var body = openapi.components.requestBodies[body_schema].content['application/json'].example;
-                }
-                else{
-                    var body = {};
-                }
-                console.log(body);
-
-                // Get Schema
-                if(openapi.paths[path][method].responses['204'].content){
-                    var schema_name = openapi.paths[path][method].responses['204'].content['application/json'].schema['$ref'];    
-                    schema_name = schema_name.replace('#/components/schemas/','');
-                    var schema = openapi.components.schemas[schema_name];
-                }
-                else{
-                    var schema = {};
-                }                
-
-                // If array then get schema
-                if(schema.items){
-                    var schema_object_name = schema.items['$ref'];
-                    schema_object_name = schema_object_name.replace('#/components/schemas/','');
-                    var schema_items = openapi.components.schemas[schema_object_name];
-                    delete schema_items.example;
-                    schema.items = schema_items;
-                }
-
-                console.log(schema);                
-
-                const options = {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": token
-                    },
-                    body: JSON.stringify(body)
-                };		
-
-                fetch(base_url + apply_path,options)
-                    .then(function(response) {
-                        if (!response.ok) {
-                            console.log('Error with Status Code: ' + response.status);
-                            return;
-                        }
-                        response.text().then(function(data) {	
-
-                            var results = '<img src="/images/icons/green-icon.png" width="50">';
-                            document.getElementById(path + '-' + method + '-results').innerHTML = results;
-
-                        });                        
-                    })
-                    .catch(function(err) {
-                        console.log('Error: ' + err);
-                });
-
-                }                                     
+                                           
     </script>     
 
     <textarea id="openapi" cols="100" rows="5" style="width: 100%; height: 400px; display: none;">{{ openapi }}</textarea>    
 
-    <h1>{{ api.info.title }}</h1>
-    <p>{{ api.info.description }}</p>   
-
     <script>        
-
-        function testAll(){
-        {% for path in api.paths %}                    
-            {% for method in path[1] %}
-                {% if method[0] != 'options' %}
-                    
-                    {% if method[0] == 'get' %}
-                        sendGET('{{ path[0] }}','{{ method[0] }}');
-                    {% elsif method[0] == 'post' %}
-                        sendPOST('{{ path[0] }}','{{ method[0] }}');
-                    {% elsif method[0] == 'put' %}
-                        sendPUT('{{ path[0] }}','{{ method[0] }}');                                                                                             
-                    {% endif %}                          
-
-                {% endif %}  
-
-            {% endfor %}  
-        {% endfor %}  
-        } 
+        lintOpenAPI();
     </script> 
 
-    <table class="table">
-        <thead>
+    <table class="table" id="results">
         <tr>
-            <th scope="col">Operation</th>
-            <th scope="col">Results</th>
+            <td align="center"><br></td>
+        </tr>        
+        <tr>
+            <td align="center"><span style="color:red; font-size: 18px; font-weight: bold;">Linting OpenAPI...</span></td>
         </tr>
-        </thead>
-        <tbody>
-        {% for path in api.paths %}                    
-            {% for method in path[1] %}
-
-                {% if method[0] != 'options' %}
-                    {% if method[0] != 'delete' %}
-
-                    {% if method[0] == 'get' %}
-                        {% assign method_color = "#228B22" %}
-                    {% elsif method[0] == 'post' %}
-                        {% assign method_color = "#FF5733" %}
-                    {% elsif method[0] == 'put' %}
-                        {% assign method_color = "#FFC300" %} 
-                    {% elsif method[0] == 'delete' %}
-                        {% assign method_color = "#C70039" %}                                                                                     
-                    {% elsif method[0] == 'options' %}
-                        {% assign method_color = "#0006FF" %}                             
-                    {% endif %}
-
-                    <tr>
-                        <td><span style="color:{{ method_color }};">{{ method[0] | upcase }}</span> {{ method[1].summary }}</td>
-                        <td id="{{ path[0] }}-{{ method[0] }}-results" width="10%">RESULTS</td>
-                    </tr>                            
-
-                    {% endif %} 
-                {% endif %}  
-
-            {% endfor %}  
-        {% endfor %}
-        </tbody>
+        <tr>
+            <td align="center"><br></td>
+        </tr>          
     </table>        
 
     </div>
